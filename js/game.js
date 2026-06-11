@@ -434,6 +434,8 @@ function startRound() {
   timer = 99;
   running = false;
   roundEnding = false;
+  projs.length = 0;
+  hooks.length = 0;
   document.getElementById('round').textContent = 'ROUND ' + round;
   document.getElementById('hp1').style.width = '100%';
   document.getElementById('hp2').style.width = '100%';
@@ -1011,6 +1013,7 @@ function specialColor(id){ return SPECIAL_COLORS[id] || '#9EEFFF'; }
 const projs = [];
 function startSpecial(f){
   f.state = 'special'; f.stateTime = 0; f.hitDealt = false;
+  f.specialKind = (f.charId === 'rice') ? 'fishing' : 'beam';
   f.sp = 0; f.vx = 0;
   timeFreeze = Math.max(timeFreeze, 0.10);
   cameraShake = Math.max(cameraShake, 6);
@@ -1026,6 +1029,111 @@ function fireSpecial(f){
   });
   cameraShake = Math.max(cameraShake, 8);
   SFX.specialFire();
+}
+// ===== ライス専用必殺技: 釣り上げ(フィッシング) =====
+const hooks = [];
+function hookFor(f){ return hooks.find(h => h.owner === f) || null; }
+function removeHookFor(f){ const i = hooks.findIndex(h => h.owner === f); if(i >= 0) hooks.splice(i,1); }
+function fireHook(f){
+  const sx = f.x + f.facing * 50, sy = f.y - 95;
+  hooks.push({ owner: f, phase: 'cast', x: sx, y: sy, sx, sy, dir: f.facing, dist: 0, t: 0, gx: 0, gy: 0 });
+  SFX.specialFire();
+}
+function fishSlamHit(opp, f){
+  const col = specialColor(f.charId);
+  opp.hp = Math.max(0, opp.hp - 26 * f.dmgMul);
+  f.sp = Math.min(100, f.sp + 12);
+  opp.sp = Math.min(100, opp.sp + 7);
+  opp.flashTime = 0.2;
+  cameraShake = Math.max(cameraShake, 18);
+  timeFreeze = Math.max(timeFreeze, 0.12);
+  spawnFx(opp.x, FLOOR - 30, { count: 30, colors: [col, '#ffffff', '#D8FFFF'], spread: 950, size: 7 });
+  if (opp.hp <= 0) {
+    opp.state = 'ko'; opp.stateTime = 0;
+    opp.vy = -260; opp.vx = f.facing * 220;
+    SFX.ko();
+  } else {
+    opp.state = 'hit'; opp.stateTime = 0;
+    opp.vx = f.facing * 120; opp.vy = -140;
+    SFX.kick();
+  }
+}
+function updateHooks(dt){
+  for (let i = hooks.length - 1; i >= 0; i--){
+    const h = hooks[i];
+    const f = h.owner;
+    const opp = (f === p1) ? p2 : p1;
+    if (!p1 || !p2 || f.state === 'ko'){ hooks.splice(i,1); continue; }
+    if (h.phase === 'cast'){
+      const v = 860 * dt;
+      h.x += h.dir * v; h.dist += v;
+      if (opp.state !== 'ko' && rectsOverlap({x: h.x - 26, y: h.y - 26, w: 52, h: 52}, bodyBox(opp))){
+        h.phase = 'pull'; h.t = 0;
+        h.gx = opp.x; h.gy = opp.y;
+        opp.blocking = false;
+        SFX.punch();
+        spawnFx(opp.x, opp.y - 70, { count: 14, colors: [specialColor(f.charId), '#ffffff'], spread: 600, size: 5 });
+      } else if (h.dist > 430){
+        h.phase = 'retract';
+      }
+    } else if (h.phase === 'retract'){
+      h.x -= h.dir * 1300 * dt;
+      if ((h.dir > 0 && h.x <= h.sx) || (h.dir < 0 && h.x >= h.sx)) hooks.splice(i,1);
+    } else if (h.phase === 'pull'){
+      if (opp.state === 'ko'){ hooks.splice(i,1); continue; }
+      h.t += dt;
+      const k = Math.min(1, h.t / 0.34);
+      const e = 1 - Math.pow(1 - k, 3);
+      const apexX = f.x + f.facing * 95, apexY = FLOOR - 265;
+      opp.x = h.gx + (apexX - h.gx) * e;
+      opp.y = h.gy + (apexY - h.gy) * e;
+      opp.vx = 0; opp.vy = 0;
+      opp.state = 'hit'; opp.stateTime = 0;
+      h.x = opp.x; h.y = opp.y - 70;
+      if (k >= 1){ h.phase = 'slam'; h.t = 0; h.gx = opp.x; h.gy = opp.y; }
+    } else if (h.phase === 'slam'){
+      if (opp.state === 'ko'){ hooks.splice(i,1); continue; }
+      h.t += dt;
+      const k = Math.min(1, h.t / 0.16);
+      const e = k * k;
+      opp.x = h.gx + (f.facing * 25) * e;
+      opp.y = h.gy + (FLOOR - h.gy) * e;
+      opp.vx = 0; opp.vy = 0;
+      opp.state = 'hit'; opp.stateTime = 0;
+      h.x = opp.x; h.y = opp.y - 70;
+      if (k >= 1){
+        opp.y = FLOOR;
+        fishSlamHit(opp, f);
+        hooks.splice(i,1);
+      }
+    }
+  }
+}
+function drawHooks(){
+  hooks.forEach(h => {
+    const f = h.owner;
+    const col = specialColor(f.charId);
+    const hx = f.x + f.facing * 42, hy = f.y - 98;
+    ctx.save();
+    const sag = (h.phase === 'cast' || h.phase === 'retract') ? 26 : -6;
+    ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(hx, hy);
+    ctx.quadraticCurveTo((hx + h.x) / 2, Math.min(hy, h.y) + sag, h.x, h.y);
+    ctx.stroke();
+    const grd = ctx.createRadialGradient(h.x, h.y, 2, h.x, h.y, 22);
+    grd.addColorStop(0, '#ffffff');
+    grd.addColorStop(0.4, col);
+    grd.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = grd;
+    ctx.beginPath(); ctx.arc(h.x, h.y, 22, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(h.x, h.y + 4, 7, Math.PI * 0.1, Math.PI * 1.1, false);
+    ctx.stroke();
+    ctx.restore();
+  });
 }
 function updateProjs(dt){
   for (let i = projs.length - 1; i >= 0; i--){
@@ -1173,9 +1281,10 @@ function updateFighter(dt, f, opp) {
     if (Math.random() < 0.6) spawnFx(f.x, f.y - 70, { count: 2, colors: [specialColor(f.charId), '#ffffff'], spread: 260, size: 5 });
     if (!f.hitDealt && f.stateTime > 0.26) {
       f.hitDealt = true;
-      fireSpecial(f);
+      if (f.specialKind === 'fishing') fireHook(f); else fireSpecial(f);
     }
-    if (f.stateTime > 0.55) f.state = 'idle';
+    if (f.stateTime > 0.55 && !hookFor(f)) f.state = 'idle';
+    if (f.stateTime > 2.4) { removeHookFor(f); f.state = 'idle'; }
   } else if (f.state === 'hit') {
     if (f.stateTime > 0.28) f.state = 'idle';
   }
@@ -1572,6 +1681,7 @@ function loop(t) {
     updateFighter(dt, p1, p2);
     updateFighter(dt, p2, p1);
     updateProjs(dt);
+    updateHooks(dt);
     resolveCollision();
     timer -= dt;
     if (timer < 0) timer = 0;
@@ -1580,6 +1690,7 @@ function loop(t) {
     updateHpBar(2, p2.hp, p2.maxHp);
     checkRoundEnd();
   } else if (p1 && p2 && roundEnding) {
+    hooks.length = 0;
     // keep physics rolling on KO
     updateFighter(rawDt, p1, p2);
     updateFighter(rawDt, p2, p1);
@@ -1616,6 +1727,7 @@ function loop(t) {
     drawFighter(order[0]);
     drawFighter(order[1]);
   }
+  drawHooks();
   drawProjs();
   drawFx();
 
