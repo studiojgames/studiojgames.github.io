@@ -117,12 +117,19 @@ const SFX = {
     if(p && p.catch) p.catch(()=>{}); // 自動再生ブロック時は次のタップで再試行
   },
   stopTitleBGM(){ const a=this._getTitle(); if(a){ a.pause(); a.currentTime=0; } },
-  // ===== ロビー(キャラ選択)用BGM (MP3ファイル) =====
+  // ===== ロビー(キャラ選択)用BGM (MP3ファイル・2曲からランダム) =====
   lobbyEl: null,
+  lobbyTracks: ['assets/bgm/lobby.mp3','assets/bgm/lobby2.mp3'],
   _getLobby(){ if(!this.lobbyEl) this.lobbyEl=document.getElementById('lobbyBgm'); return this.lobbyEl; },
   startLobbyBGM(){
     if(!this.on) return;
     const a=this._getLobby(); if(!a) return;
+    // 停止中(=ロビーに入り直した)なら毎回ランダムに選曲
+    if(a.paused){
+      const pick=this.lobbyTracks[Math.floor(Math.random()*this.lobbyTracks.length)];
+      const cur=(a.getAttribute('src')||'').split('?')[0];
+      if(cur!==pick){ a.setAttribute('src',pick); a.load(); }
+    }
     a.volume=Math.max(0,Math.min(1,0.9*this.bgmVol));
     const p=a.play();
     if(p && p.catch) p.catch(()=>{});
@@ -190,10 +197,17 @@ const ROSTER = [{"id": "nao", "name": "なお", "type": "パワー", "hpMul": 1.
 const IMGS = {};
 ROSTER.forEach(r=>{ const im=new Image(); im.src=r.img; IMGS[r.id]=im; });
 // ステージ背景プリロード
-const BG_DATA = {lion_night:'assets/stages/lion_night.webp', sky_day:'assets/stages/sky_day.webp'};
+const BG_DATA = {lion_night:'assets/stages/lion_night.webp', sky_day:'assets/stages/sky_day.webp', budokai:'assets/stages/budokai.webp'};
+// 背景ごとの描画設定: horizon=地平線の縦位置 / ground=地平線より下の塗り色
+const BG_CONF = {
+  lion_night:{horizon:0.86, ground:'#0a1422'},
+  sky_day:   {horizon:0.86, ground:'#9fb8cc'},
+  budokai:   {horizon:1.12, ground:'#4a382a'},
+};
 const BG_IMGS = {};
 Object.keys(BG_DATA).forEach(k=>{ const im=new Image(); im.src=BG_DATA[k]; BG_IMGS[k]=im; });
 const PLATFORM_IMG = new Image(); PLATFORM_IMG.src = 'assets/stages/platform.webp';
+const BUDOKAI_FLOOR_IMG = new Image(); BUDOKAI_FLOOR_IMG.src = 'assets/stages/budokai_floor.webp';
 let CUR_BG = 'lion_night';
 let STAGE_PLACE = 'A';  // 試合の場所(A=獅子の聖殿 / B=蒼穹の塔)
 const POSE_DATA = {"J": {"idle": {"b64": "assets/poses/J_idle.webp", "w": 408, "h": 555, "bodyH": 554, "cropH": 555, "footX": 0.8186274509803921, "footY": 0.9981981981981982, "cropW": 408, "scaleAdj": 1.15, "fmt": "webp"}, "punch": {"b64": "assets/poses/J_punch.webp", "w": 420, "h": 467, "bodyH": 564, "cropH": 565, "footX": 0.7775590551181102, "footY": 0.9982300884955753, "cropW": 508, "scaleAdj": 1.15, "fmt": "webp"}, "guard": {"b64": "assets/poses/J_guard.webp", "w": 420, "h": 442, "bodyH": 498, "cropH": 499, "footX": 0.7552742616033755, "footY": 0.9979959919839679, "cropW": 474, "scaleAdj": 1.15, "fmt": "webp"}, "down": {"b64": "assets/poses/J_down.webp", "w": 420, "h": 272, "bodyH": 329, "cropH": 329, "footX": 0.5502958579881657, "footY": 0.9969604863221885, "cropW": 507, "scaleAdj": 1.15, "fmt": "webp"}, "kick": {"b64": "assets/poses/J_kick.webp", "w": 420, "h": 514, "bodyH": 824, "cropH": 825, "footX": 0.3610698365527489, "footY": 0.9987878787878788, "cropW": 673, "scaleAdj": 0.77, "fmt": "webp"}, "walk": {"b64": "assets/poses/J_walk.webp", "w": 360, "h": 784, "bodyH": 845, "cropW": 388, "cropH": 846, "footX": 0.7654639175257731, "footY": 0.9988179669030733, "scaleAdj": 0.754, "fmt": "webp"}}, "char": {"idle": {"b64": "assets/poses/char_idle.webp", "w": 295, "h": 384, "bodyH": 367, "cropW": 295, "cropH": 384, "footX": 0.847915, "footY": 0.979167, "scaleAdj": 0.9, "fmt": "webp"}, "walk": {"b64": "assets/poses/char_walk.webp", "w": 249, "h": 384, "bodyH": 375, "cropW": 249, "cropH": 384, "footX": 0.345081, "footY": 0.989583, "scaleAdj": 0.881, "fmt": "webp"}, "punch": {"b64": "assets/poses/char_punch.webp", "w": 384, "h": 234, "bodyH": 223, "cropW": 384, "cropH": 234, "footX": 0.644176, "footY": 0.978632, "scaleAdj": 1.35, "fmt": "webp"}, "kick": {"b64": "assets/poses/char_kick.webp", "w": 378, "h": 384, "bodyH": 364, "cropW": 378, "cropH": 384, "footX": 0.352838, "footY": 0.973958, "scaleAdj": 0.907, "fmt": "webp"}, "guard": {"b64": "assets/poses/char_guard.webp", "w": 363, "h": 384, "bodyH": 366, "cropW": 363, "cropH": 384, "footX": 0.870445, "footY": 0.979167, "scaleAdj": 0.903, "fmt": "webp"}, "down": {"b64": "assets/poses/char_down.webp", "w": 384, "h": 264, "bodyH": 256, "cropW": 384, "cropH": 264, "footX": 0.210172, "footY": 0.969697, "scaleAdj": 1.0, "fmt": "webp"}}, "nao": {"idle": {"b64": "assets/poses/nao_idle.webp", "w": 344, "h": 384, "bodyH": 367, "cropW": 344, "cropH": 384, "footX": 0.840873, "footY": 0.979167, "scaleAdj": 1.1, "fmt": "webp"}, "walk": {"b64": "assets/poses/nao_walk.webp", "w": 239, "h": 384, "bodyH": 374, "cropW": 239, "cropH": 384, "footX": 0.532565, "footY": 0.986979, "scaleAdj": 1.079, "fmt": "webp"}, "punch": {"b64": "assets/poses/nao_punch.webp", "w": 384, "h": 314, "bodyH": 297, "cropW": 384, "cropH": 314, "footX": 0.818382, "footY": 0.974522, "scaleAdj": 1.36, "fmt": "webp"}, "kick": {"b64": "assets/poses/nao_kick.webp", "w": 356, "h": 384, "bodyH": 365, "cropW": 356, "cropH": 384, "footX": 0.316309, "footY": 0.976562, "scaleAdj": 1.105, "fmt": "webp"}, "guard": {"b64": "assets/poses/nao_guard.webp", "w": 373, "h": 384, "bodyH": 365, "cropW": 373, "cropH": 384, "footX": 0.847321, "footY": 0.976562, "scaleAdj": 1.105, "fmt": "webp"}, "down": {"b64": "assets/poses/nao_down.webp", "w": 384, "h": 277, "bodyH": 267, "cropW": 384, "cropH": 277, "footX": 0.605508, "footY": 0.963899, "scaleAdj": 1.513, "fmt": "webp"}}, "udobu": {"idle": {"b64": "assets/poses/udobu_idle.webp", "w": 279, "h": 355, "bodyH": 355, "cropW": 279, "cropH": 355, "footX": 0.4191, "footY": 1.0, "scaleAdj": 1.08, "fmt": "webp"}, "punch": {"b64": "assets/poses/udobu_punch.webp", "w": 466, "h": 336, "bodyH": 355, "cropW": 466, "cropH": 336, "footX": 0.2012, "footY": 1.0, "scaleAdj": 1.1411, "fmt": "webp"}, "walk": {"b64": "assets/poses/udobu_walk.webp", "w": 279, "h": 355, "bodyH": 355, "cropW": 279, "cropH": 355, "footX": 0.6669, "footY": 1.0, "scaleAdj": 1.08, "fmt": "webp"}, "kick": {"b64": "assets/poses/udobu_kick.webp", "w": 369, "h": 338, "bodyH": 355, "cropW": 369, "cropH": 338, "footX": 0.2944, "footY": 1.0, "scaleAdj": 0.9755, "fmt": "webp"}, "guard": {"b64": "assets/poses/udobu_guard.webp", "w": 328, "h": 323, "bodyH": 355, "cropW": 328, "cropH": 323, "footX": 0.7135, "footY": 1.0, "scaleAdj": 1.187, "fmt": "webp"}, "down": {"b64": "assets/poses/udobu_down.webp", "w": 444, "h": 156, "bodyH": 355, "cropW": 444, "cropH": 156, "footX": 0.42, "footY": 1.0, "scaleAdj": 1.5253, "fmt": "webp"}}, "arya": {"idle": {"w": 219, "h": 512, "cropW": 219, "cropH": 512, "footX": 0.8895, "footY": 1.0, "fmt": "webp", "b64": "assets/poses/arya_idle.webp", "scaleAdj": 1.0, "bodyH": 512}, "walk": {"w": 243, "h": 512, "cropW": 243, "cropH": 512, "footX": 0.2824, "footY": 1.0, "fmt": "webp", "b64": "assets/poses/arya_walk.webp", "scaleAdj": 1.0001, "bodyH": 512}, "punch": {"w": 302, "h": 512, "cropW": 302, "cropH": 512, "footX": 0.8803, "footY": 1.0, "fmt": "webp", "b64": "assets/poses/arya_punch.webp", "scaleAdj": 1.0009, "bodyH": 512}, "kick": {"w": 375, "h": 512, "cropW": 375, "cropH": 512, "footX": 0.1482, "footY": 1.0, "fmt": "webp", "b64": "assets/poses/arya_kick.webp", "scaleAdj": 1.0, "bodyH": 512}, "guard": {"w": 334, "h": 512, "cropW": 334, "cropH": 512, "footX": 0.5411, "footY": 1.0, "fmt": "webp", "b64": "assets/poses/arya_guard.webp", "scaleAdj": 0.95, "bodyH": 512}, "down": {"w": 512, "h": 282, "cropW": 512, "cropH": 282, "footX": 0.7407, "footY": 1.0, "scaleAdj": 1.1286, "bodyH": 512, "fmt": "webp", "b64": "assets/poses/arya_down.webp"}}, "arya_skirt": {"idle": {"b64": "assets/poses/arya_skirt_idle.webp", "w": 332, "h": 512, "cropW": 332, "cropH": 512, "footX": 0.8528, "footY": 1.0, "bodyH": 512, "scaleAdj": 1.0, "fmt": "webp"}, "walk": {"b64": "assets/poses/arya_skirt_walk.webp", "w": 398, "h": 512, "cropW": 398, "cropH": 512, "footX": 0.6672, "footY": 1.0, "bodyH": 512, "scaleAdj": 0.9807, "fmt": "webp"}, "punch": {"b64": "assets/poses/arya_skirt_punch.webp", "w": 436, "h": 512, "cropW": 436, "cropH": 512, "footX": 0.8032, "footY": 1.0, "bodyH": 512, "scaleAdj": 1.0, "fmt": "webp"}, "kick": {"b64": "assets/poses/arya_skirt_kick.webp", "w": 419, "h": 512, "cropW": 419, "cropH": 512, "footX": 0.4206, "footY": 1.0, "bodyH": 512, "scaleAdj": 0.9769, "fmt": "webp"}, "guard": {"b64": "assets/poses/arya_skirt_guard.webp", "w": 296, "h": 470, "cropW": 296, "cropH": 470, "footX": 0.9155, "footY": 1.0, "bodyH": 512, "scaleAdj": 1.1, "fmt": "webp"}, "down": {"b64": "assets/poses/arya_skirt_down.webp", "w": 768, "h": 512, "cropW": 768, "cropH": 512, "footX": 0.3571, "footY": 1.0, "bodyH": 512, "scaleAdj": 0.7013, "fmt": "webp"}}, "rice": {"idle": {"b64": "assets/poses/rice_idle.webp", "w": 326, "h": 460, "bodyH": 460, "cropW": 326, "cropH": 460, "footX": 0.1032, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "walk": {"b64": "assets/poses/rice_walk.webp", "w": 307, "h": 460, "bodyH": 460, "cropW": 307, "cropH": 460, "footX": 0.8188, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "punch": {"b64": "assets/poses/rice_punch.webp", "w": 421, "h": 460, "bodyH": 460, "cropW": 421, "cropH": 460, "footX": 0.8719, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "kick": {"b64": "assets/poses/rice_kick.webp", "w": 441, "h": 460, "bodyH": 460, "cropW": 441, "cropH": 460, "footX": 0.2452, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "guard": {"b64": "assets/poses/rice_guard.webp", "w": 335, "h": 460, "bodyH": 460, "cropW": 335, "cropH": 460, "footX": 0.2176, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "down": {"b64": "assets/poses/rice_down.webp", "w": 703, "h": 285, "bodyH": 460, "cropW": 703, "cropH": 285, "footX": 0.2805, "footY": 1.0, "scaleAdj": 0.654, "fmt": "webp"}}, "otome": {"idle": {"b64": "assets/poses/otome_idle.webp", "w": 322, "h": 456, "bodyH": 456, "cropW": 322, "cropH": 456, "footX": 0.5219, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "walk": {"b64": "assets/poses/otome_walk.webp", "w": 334, "h": 459, "bodyH": 456, "cropW": 334, "cropH": 459, "footX": 0.7107, "footY": 1.0, "scaleAdj": 0.9935, "fmt": "webp"}, "punch": {"b64": "assets/poses/otome_punch.webp", "w": 356, "h": 456, "bodyH": 456, "cropW": 356, "cropH": 456, "footX": 0.3998, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "kick": {"b64": "assets/poses/otome_kick.webp", "w": 366, "h": 425, "bodyH": 456, "cropW": 366, "cropH": 425, "footX": 0.426, "footY": 1.0, "scaleAdj": 1.0729, "fmt": "webp"}, "guard": {"b64": "assets/poses/otome_guard.webp", "w": 313, "h": 411, "bodyH": 456, "cropW": 313, "cropH": 411, "footX": 0.6426, "footY": 1.0, "scaleAdj": 1.1095, "fmt": "webp"}, "down": {"b64": "assets/poses/otome_down.webp", "w": 450, "h": 296, "bodyH": 456, "cropW": 450, "cropH": 296, "footX": 0.3814, "footY": 1.0, "scaleAdj": 0.9551, "fmt": "webp"}}};
@@ -401,9 +415,12 @@ function startRound() {
   if(STAGE_PLACE==='A'){
     // 獅子の聖殿: 夜の獅子紋章で始まり、延長で夜明けの蒼穹へ
     CUR_BG = (round===1) ? 'lion_night' : 'sky_day';
-  } else {
+  } else if(STAGE_PLACE==='B'){
     // 蒼穹の塔: 青空の摩天楼で始まり、延長で夜の獅子紋章へ
     CUR_BG = (round===1) ? 'sky_day' : 'lion_night';
+  } else {
+    // 武舞台: 全ラウンド通して大会会場
+    CUR_BG = 'budokai';
   }
   p1 = makeFighter(220, 1, true, SEL_P1);
   p2 = makeFighter(680, -1, false, SEL_P2);
@@ -676,6 +693,7 @@ let SEL_STAGE = 'A';  // A=獅子の聖殿 / B=蒼穹の塔
 const STAGE_INFO = [
   { id:'A', name:'蒼雨の摩天楼', preview:'assets/stages/lion_night.webp' },
   { id:'B', name:'蒼穹の塔',   preview:'assets/stages/sky_day.webp' },
+  { id:'C', name:'天下無双・武舞台', preview:'assets/stages/budokai.webp' },
 ];
 function buildStageGrid(){
   const grid=document.getElementById('stageGrid');
@@ -701,7 +719,7 @@ function showStageSelect(){
 function startMatch() {
   const _r=document.getElementById('resultOverlay'); if(_r) _r.classList.add('hidden');
   document.body.classList.add('in-battle'); resize();
-  SFX.init(); SFX.stopTitleBGM(); SFX.stopWind(); SFX.stopLobbyBGM(); SFX.startBGM();
+  SFX.init(); SFX.stopTitleBGM(); SFX.stopWind(); SFX.stopLobbyBGM(); // バトル中BGMなし(SEのみ)
   round = 1;
   wins = [0, 0];
   updateWinPips();
@@ -807,6 +825,8 @@ document.getElementById('stageBackBtn').addEventListener('click', ()=>{
   function close(){ ov.classList.add('hidden'); }
 
   sBtn.addEventListener('click', open);
+  const tBtn=document.getElementById('titleSettingsBtn');
+  if(tBtn){ tBtn.addEventListener('click', (e)=>{ e.preventDefault(); e.stopPropagation(); open(); }); }
   closeBtn.addEventListener('click', ()=>{ SFX.init(); close(); });
 
   sndToggle.addEventListener('click', function(){
@@ -916,7 +936,7 @@ function attackBox(f, kind) {
   if (kind === 'punch') {
     return { x: f.x + f.facing * 18, y: f.y - 80, w: 60, h: 22, dir: f.facing };
   } else {
-    return { x: f.x + f.facing * 22, y: f.y - 55, w: 78, h: 32, dir: f.facing , day1:'assets/stages/day1.webp', day2:'assets/stages/day2.webp'};
+    return { x: f.x + f.facing * 22, y: f.y - 55, w: 78, h: 32, dir: f.facing };
   }
 }
 function rectsOverlap(a, b) {
@@ -1071,32 +1091,44 @@ function resolveCollision() {
 // ===== Draw =====
 function drawStage() {
   const bg = BG_IMGS[CUR_BG];
+  const conf = BG_CONF[CUR_BG] || {horizon:0.86, ground:'#0a1422'};
   // 画面の実横幅(ワールド座標換算)に合わせて左右に拡張
   const battleNow = document.body.classList.contains('in-battle');
   const scNow = battleNow ? (canvas.height/H) : Math.min(canvas.width/W, canvas.height/H);
   const ext = Math.max(0, (canvas.width/scNow - W)/2);
   if(bg && bg.complete && bg.naturalWidth){
-    // 背景の横を画面幅に合わせ、地平線(画像の約下15%)をFLOORラインに合わせて配置
-    const bw = W;
+    // 背景は縦横比を保ったまま画面の実横幅をカバー(横伸ばし歪み防止)
+    const bw = W + ext*2;
     const bh = bw * (bg.naturalHeight / bg.naturalWidth);
-    const horizonRatio = 0.86;                 // 画像内で地平線がある縦位置(下寄り)
-    const by = FLOOR - bh * horizonRatio;      // 地平線をFLOORに合わせる
-    ctx.drawImage(bg, -ext, by, bw + ext*2, bh);
+    const by = FLOOR - bh * conf.horizon;      // 地平線をFLOORに合わせる
+    ctx.drawImage(bg, -ext, by, bw, bh);
     // 地平線より下(地面)を背景の暗色で埋める
-    ctx.fillStyle = (CUR_BG==='sky_day') ? '#9fb8cc' : '#0a1422';
+    ctx.fillStyle = conf.ground;
     ctx.fillRect(-ext, FLOOR-2, W+ext*2, H-(FLOOR-2));
   } else {
     ctx.fillStyle='#07121e'; ctx.fillRect(0,0,W,H);
   }
-  // SF土台: 天面をFLOORラインに合わせ、画面幅いっぱいに敷く
-  const pf = PLATFORM_IMG;
-  if(pf && pf.complete && pf.naturalWidth){
-    const pw = (W + ext*2) * 1.06;                       // 画面幅より少し広く(端を切らさない)
-    const ph = pw * (pf.naturalHeight / pf.naturalWidth);
-    const px = (W - pw) / 2;
-    const topInset = ph * 0.18;                // 土台の天面は画像の上から約18%付近
-    const py = FLOOR - topInset;               // 天面をFLOORに合わせる
-    ctx.drawImage(pf, px, py, pw, ph);
+  if(STAGE_PLACE==='C'){
+    // 武舞台: 石畳の闘技場床。奥行きが出るようファイターの足元が床の中腹に来る配置
+    const fl = BUDOKAI_FLOOR_IMG;
+    if(fl && fl.complete && fl.naturalWidth){
+      const fw = (W + ext*2) * 1.06;
+      const fh = fw * (fl.naturalHeight / fl.naturalWidth) * 0.55; // 縦圧縮で会場を隠しすぎない
+      const fx = (W - fw) / 2;
+      const fy = FLOOR - fh * 0.55;            // 足元は床の中腹に接地
+      ctx.drawImage(fl, fx, fy, fw, fh);
+    }
+  } else {
+    // SF土台: 天面をFLOORラインに合わせ、画面幅いっぱいに敷く
+    const pf = PLATFORM_IMG;
+    if(pf && pf.complete && pf.naturalWidth){
+      const pw = (W + ext*2) * 1.06;                       // 画面幅より少し広く(端を切らさない)
+      const ph = pw * (pf.naturalHeight / pf.naturalWidth);
+      const px = (W - pw) / 2;
+      const topInset = ph * 0.18;                // 土台の天面は画像の上から約18%付近
+      const py = FLOOR - topInset;               // 天面をFLOORに合わせる
+      ctx.drawImage(pf, px, py, pw, ph);
+    }
   }
   const grad = ctx.createLinearGradient(0,FLOOR-40,0,H);
   grad.addColorStop(0,'rgba(4,8,13,0)');
@@ -1494,7 +1526,7 @@ requestAnimationFrame(loop);
     if(typeof window!=='undefined') window.__titleTapLock = true;
     splash.classList.add('hide');
     setTimeout(()=>splash.classList.add('gone'), 520); // フェードアウト後に非表示
-    const gear=document.getElementById('settingsBtn'); if(gear) gear.style.display='block'; // ⚙️表示
+    // 設定はタイトル画面のボタンから開く(フロート⚙️は廃止)
     // タイトルが見えるのでBGM＆風を開始
     const ov=document.getElementById('overlay');
     if(ov && ov.classList.contains('title-screen') && !ov.classList.contains('hidden')){
