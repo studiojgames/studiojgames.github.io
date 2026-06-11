@@ -832,3 +832,43 @@ body.in-battle .controls .pad.atk{
 }
 .ts-settings::after{ transform:scaleX(-1); }
 .ts-settings:active{ color:#fff; text-shadow:0 0 10px #9EEFFF, 0 0 22px #9EEFFF; }
+
+
+/* ===== SPゲージ(HPバー下の細いゲージ) ===== */
+.spbar{
+  height:7px; margin-top:3px; border-radius:4px; overflow:hidden;
+  background:rgba(5,14,24,.85);
+  border:1px solid rgba(90,200,255,.35);
+  box-shadow:inset 0 0 6px rgba(0,0,0,.6);
+}
+.spfill{
+  height:100%; width:0%; border-radius:4px;
+  background:linear-gradient(90deg,#1e7fd6,#36d1ff);
+  box-shadow:0 0 6px rgba(54,209,255,.55);
+  transition:width .12s linear;
+}
+.spbar.right{ transform:scaleX(-1); }
+.spfill.full{
+  background:linear-gradient(90deg,#ffb13d,#ffe45e);
+  box-shadow:0 0 10px rgba(255,210,80,.85);
+  animation:spPulse .7s ease-in-out infinite;
+}
+@keyframes spPulse{0%,100%{filter:brightness(1);}50%{filter:brightness(1.45);}}
+
+/* ===== 必殺ボタン(ゲージMAXで出現・金色ネオン) ===== */
+.pad.atk{ position:relative; }
+.btn.b-sp{
+  position:absolute; left:50%; top:-92px; transform:translateX(-50%);
+  display:none;
+  background:radial-gradient(circle at 38% 30%, rgba(255,228,120,.95), rgba(180,110,10,.92));
+  border-color:rgba(255,224,130,.95);
+  color:#fff8e0;
+  text-shadow:0 0 8px rgba(255,230,140,.9);
+  box-shadow:0 0 18px rgba(255,200,60,.75), inset 0 0 12px rgba(255,255,255,.3);
+  animation:spBtnPulse .65s ease-in-out infinite;
+}
+.btn.b-sp.ready{ display:flex; }
+@keyframes spBtnPulse{
+  0%,100%{ box-shadow:0 0 14px rgba(255,200,60,.6), inset 0 0 10px rgba(255,255,255,.25); }
+  50%{ box-shadow:0 0 30px rgba(255,220,90,1), inset 0 0 16px rgba(255,255,255,.45); }
+}
