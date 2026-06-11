@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="screen-orientation" content="landscape">
 <title>ReD同盟 格闘ゲーム</title>
-<link rel="stylesheet" href="css/style.css?v=2">
+<link rel="stylesheet" href="css/style.css?v=3">
 </head>
 <body>
 <div class="arena">
@@ -25,6 +25,7 @@
     <div class="health-block">
       <div class="name"><span id="nm1">なお</span><span class="wins" id="wins1"><span></span><span></span></span></div>
       <div class="bar"><div class="ghost" id="hp1ghost"></div><div class="fill" id="hp1"></div><div class="bar-gloss"></div></div>
+      <div class="spbar"><div class="spfill" id="sp1"></div></div>
     </div>
     <div class="center-hud">
       <div class="timer" id="timer">60</div>
@@ -33,6 +34,7 @@
     <div class="health-block right">
       <div class="name right"><span class="wins" id="wins2"><span></span><span></span></span><span id="nm2">なお</span></div>
       <div class="bar right"><div class="ghost" id="hp2ghost"></div><div class="fill" id="hp2"></div><div class="bar-gloss"></div></div>
+      <div class="spbar right"><div class="spfill" id="sp2"></div></div>
     </div>
   </div>
 
@@ -48,6 +50,7 @@
       <button class="btn move b-right" data-key="d">►</button>
     </div>
     <div class="pad atk">
+      <button class="btn sp b-sp" data-key="u" id="spBtn">必殺</button>
       <button class="btn atk b-punch" data-key="j">PUNCH</button>
       <button class="btn atk b-kick" data-key="k">KICK</button>
       <button class="btn block b-block" data-key="l">BLOCK</button>
@@ -175,6 +178,6 @@
   <button id="settingsBtn" style="position:absolute;top:8px;right:8px;z-index:300;background:rgba(0,0,0,0.6);color:#fff;border:1px solid rgba(255,255,255,0.35);border-radius:8px;padding:6px 11px;font-size:20px;cursor:pointer;display:none;">⚙️</button>
 </div>
 
-<script src="js/game.js?v=2"></script>
+<script src="js/game.js?v=3"></script>
 </body>
 </html>
