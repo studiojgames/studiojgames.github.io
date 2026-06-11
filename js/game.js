@@ -36,6 +36,8 @@ const SFX = {
   punch(){ this.noise(0.08,0.4); this.tone(90,0.14,'sine',0.5,45); this.tone(140,0.08,'square',0.2,60); },
   kick(){ this.noise(0.12,0.45); this.tone(70,0.22,'sine',0.6,35); this.tone(110,0.12,'sawtooth',0.3,40); },
   jump(){ this.tone(300,0.18,'square',0.22,620); },
+  special(){ this.tone(180,0.3,'sawtooth',0.4,900); this.tone(90,0.3,'sine',0.5,400); this.noise(0.2,0.25); },
+  specialFire(){ this.noise(0.25,0.5); this.tone(420,0.25,'sawtooth',0.45,60); this.tone(60,0.35,'sine',0.6,30); },
   ko(){ this.tone(200,0.5,'sawtooth',0.3,60); this.noise(0.4,0.35); },
   block(){ this.tone(800,0.06,'square',0.12); this.tone(600,0.06,'square',0.10); },
   thunder(){
@@ -197,12 +199,12 @@ const ROSTER = [{"id": "nao", "name": "なお", "type": "パワー", "hpMul": 1.
 const IMGS = {};
 ROSTER.forEach(r=>{ const im=new Image(); im.src=r.img; IMGS[r.id]=im; });
 // ステージ背景プリロード
-const BG_DATA = {lion_night:'assets/stages/lion_night.webp', sky_day:'assets/stages/sky_day.webp', budokai:'assets/stages/budokai.webp'};
+const BG_DATA = {lion_night:'assets/stages/lion_night.webp', sky_day:'assets/stages/sky_day.webp', budokai:'assets/stages/budokai_w.webp'};
 // 背景ごとの描画設定: horizon=地平線の縦位置 / ground=地平線より下の塗り色
 const BG_CONF = {
   lion_night:{horizon:0.86, ground:'#0a1422'},
   sky_day:   {horizon:0.86, ground:'#9fb8cc'},
-  budokai:   {horizon:1.12, ground:'#4a382a'},
+  budokai:   {anchor:312, horizon:1.0, ground:'#4a382a'},
 };
 const BG_IMGS = {};
 Object.keys(BG_DATA).forEach(k=>{ const im=new Image(); im.src=BG_DATA[k]; BG_IMGS[k]=im; });
@@ -312,7 +314,7 @@ const keys = {};
 window.addEventListener('keydown', e => {
   const k = e.key.toLowerCase();
   keys[k] = true;
-  if (['a','d','w','j','k','l',' ','arrowleft','arrowright','arrowup'].includes(k)) e.preventDefault();
+  if (['a','d','w','j','k','l','u',' ','arrowleft','arrowright','arrowup'].includes(k)) e.preventDefault();
 });
 window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
 
@@ -339,7 +341,8 @@ function makeFighter(x, facing, isPlayer, charId) {
     isPlayer, charId, name: r.name, dmgMul: r.dmgMul, walkMul: r.walk, jumpMul: r.jump,
     aiTimer: 0, aiAction: 'wait', aiAgg: 0.6,
     flashTime: 0, shake: 0,
-    prevPunch: false, prevKick: false
+    prevPunch: false, prevKick: false,
+    sp: 0, prevSp: false
   };
 }
 
@@ -467,13 +470,15 @@ function endMatch(playerWon) {
   }
   res.classList.remove('hidden');
   res.innerHTML = `
-    <img src="${faceImg}" style="width:${faceSize};height:${faceSize};object-fit:cover;border-radius:12px;border:3px solid ${playerWon?'#5effc8':'#5a7a90'};box-shadow:0 0 30px ${playerWon?'#5effc888':'#5a7a9088'};margin-bottom:16px;">
-    <div class="title" style="font-size:clamp(28px,9vw,52px);color:${playerWon?'#5effc8':'#9bbdd0'}">${playerWon ? 'YOU WIN' : 'LOSE'}</div>
-    <div class="subtitle">「${msg}」</div>
-    <div class="instructions">SCORE <b>${wins[0]} – ${wins[1]}</b></div>
-    <button class="start-btn" id="reBtn">もう一度</button>
-    <button class="start-btn" id="selBtn" style="background:rgba(8,20,32,.6);color:#9EEFFF;border-color:rgba(158,239,255,.4);box-shadow:0 6px 0 rgba(0,15,30,.8),0 0 12px rgba(158,239,255,.2);margin-top:10px;">キャラ選択へ</button>
-    <button class="start-btn" id="titleBtn" style="background:rgba(8,20,32,.6);color:#9EEFFF;border-color:rgba(158,239,255,.4);box-shadow:0 6px 0 rgba(0,15,30,.8),0 0 12px rgba(158,239,255,.2);margin-top:10px;">タイトルへ</button>
+    <img src="${faceImg}" style="width:min(22vh,150px);height:min(22vh,150px);object-fit:cover;object-position:top;border-radius:12px;border:3px solid ${playerWon?'#5effc8':'#5a7a90'};box-shadow:0 0 24px ${playerWon?'#5effc888':'#5a7a9088'};margin-bottom:1vh;">
+    <div class="title" style="font-size:clamp(22px,7vh,44px);line-height:1.1;color:${playerWon?'#5effc8':'#9bbdd0'}">${playerWon ? 'YOU WIN' : 'LOSE'}</div>
+    <div class="subtitle" style="margin:0.6vh 0;">「${msg}」</div>
+    <div class="instructions" style="margin:0.4vh 0 1.2vh;">SCORE <b>${wins[0]} – ${wins[1]}</b></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+      <button class="start-btn" id="reBtn" style="margin:0;padding:12px 20px;font-size:14px;">もう一度</button>
+      <button class="start-btn" id="selBtn" style="margin:0;padding:12px 20px;font-size:14px;background:rgba(8,20,32,.6);color:#9EEFFF;border-color:rgba(158,239,255,.4);box-shadow:0 6px 0 rgba(0,15,30,.8),0 0 12px rgba(158,239,255,.2);">キャラ選択へ</button>
+      <button class="start-btn" id="titleBtn" style="margin:0;padding:12px 20px;font-size:14px;background:rgba(8,20,32,.6);color:#9EEFFF;border-color:rgba(158,239,255,.4);box-shadow:0 6px 0 rgba(0,15,30,.8),0 0 12px rgba(158,239,255,.2);">タイトルへ</button>
+    </div>
   `;
   document.getElementById('reBtn').addEventListener('click', ()=>{ res.classList.add('hidden'); startMatch(); });
   document.getElementById('selBtn').addEventListener('click', ()=>{ res.classList.add('hidden'); showCharSelect(); });
@@ -693,7 +698,7 @@ let SEL_STAGE = 'A';  // A=獅子の聖殿 / B=蒼穹の塔
 const STAGE_INFO = [
   { id:'A', name:'蒼雨の摩天楼', preview:'assets/stages/lion_night.webp' },
   { id:'B', name:'蒼穹の塔',   preview:'assets/stages/sky_day.webp' },
-  { id:'C', name:'天下無双・武舞台', preview:'assets/stages/budokai.webp' },
+  { id:'C', name:'天下無双・武舞台', preview:'assets/stages/budokai_w.webp' },
 ];
 function buildStageGrid(){
   const grid=document.getElementById('stageGrid');
@@ -889,7 +894,8 @@ function readInputs(f, opp) {
       up: !!(keys['w'] || keys[' '] || keys['arrowup']),
       punch: !!keys['j'],
       kick: !!keys['k'],
-      block: !!keys['l']
+      block: !!keys['l'],
+      sp: !!keys['u']
     };
   }
   // ===== CPU AI =====
@@ -906,10 +912,11 @@ function readInputs(f, opp) {
     if (oppAttacking && oppClose && Math.random() < D.guard) {
       f.aiAction = Math.random() < 0.5 ? 'block' : 'jump';
     } else if (dist > 130) {
-      f.aiAction = dx > 0 ? 'right' : 'left';
+      f.aiAction = (f.sp >= 100 && dist < 460 && Math.random() < 0.35) ? 'sp' : (dx > 0 ? 'right' : 'left');
     } else if (oppClose) {
       const r = Math.random();
-      if (r < 0.45 * agg) f.aiAction = 'punch';
+      if (f.sp >= 100 && Math.random() < 0.6) f.aiAction = 'sp';
+      else if (r < 0.45 * agg) f.aiAction = 'punch';
       else if (r < 0.75 * agg) f.aiAction = 'kick';
       else if (r < 0.85) f.aiAction = 'jump';
       else if (r < 0.92) f.aiAction = 'block';
@@ -924,7 +931,8 @@ function readInputs(f, opp) {
     up: f.aiAction === 'jump',
     punch: f.aiAction === 'punch',
     kick: f.aiAction === 'kick',
-    block: f.aiAction === 'block'
+    block: f.aiAction === 'block',
+    sp: f.aiAction === 'sp'
   };
 }
 
@@ -957,13 +965,19 @@ function applyHit(target, attacker, dmg, kb) {
     actualDmg = dmg * 0.18;
     actualKb = kb * 0.35;
   }
+  const armored = target.state === 'special';   // 必殺発動中はのけぞらない
   target.hp = Math.max(0, target.hp - actualDmg);
-  target.vx = attacker.facing * actualKb;
-  target.vy = blocked ? -80 : -180;
-  if (!target.blocking) {
+  if (!armored) {
+    target.vx = attacker.facing * actualKb;
+    target.vy = blocked ? -80 : -180;
+  }
+  if (!target.blocking && !armored) {
     target.state = 'hit';
     target.stateTime = 0;
   }
+  // SPゲージ: 攻撃ヒットで大きく、被弾で少し溜まる
+  attacker.sp = Math.min(100, attacker.sp + (target.blocking ? 5 : 12));
+  target.sp = Math.min(100, target.sp + 7);
   target.flashTime = 0.15;
   if (target.blocking) { SFX.block(); }
   else if (dmg >= 12) { SFX.kick(); }
@@ -987,6 +1001,84 @@ function applyHit(target, attacker, dmg, kb) {
   }
 }
 
+
+// ===== 必殺技システム =====
+const SPECIAL_COLORS = {
+  nao:'#ff5a3c', rice:'#ffd23e', udobu:'#9be8ff', char:'#c77dff',
+  arya:'#6ee7b7', J:'#36d1ff', otome:'#ff9ad5'
+};
+function specialColor(id){ return SPECIAL_COLORS[id] || '#9EEFFF'; }
+const projs = [];
+function startSpecial(f){
+  f.state = 'special'; f.stateTime = 0; f.hitDealt = false;
+  f.sp = 0; f.vx = 0;
+  timeFreeze = Math.max(timeFreeze, 0.10);
+  cameraShake = Math.max(cameraShake, 6);
+  SFX.special();
+  spawnFx(f.x, f.y - 70, { count: 18, colors: [specialColor(f.charId), '#ffffff'], spread: 700, size: 6 });
+}
+function fireSpecial(f){
+  const col = specialColor(f.charId);
+  projs.push({
+    x: f.x + f.facing * 55, y: f.y - 70,
+    vx: f.facing * 560, w: 110, h: 56,
+    owner: f, col, life: 1.6, trail: 0
+  });
+  cameraShake = Math.max(cameraShake, 8);
+  SFX.specialFire();
+}
+function updateProjs(dt){
+  for (let i = projs.length - 1; i >= 0; i--){
+    const p = projs[i];
+    p.x += p.vx * dt;
+    p.life -= dt;
+    p.trail += dt;
+    if (p.trail > 0.03){
+      p.trail = 0;
+      spawnFx(p.x - Math.sign(p.vx) * 40, p.y, { count: 2, colors: [p.col, '#ffffff'], spread: 180, size: 4 });
+    }
+    const opp = (p.owner === p1) ? p2 : p1;
+    const bb = bodyBox(opp);
+    const hb = { x: p.x - p.w/2, y: p.y - p.h/2, w: p.w, h: p.h };
+    if (opp.state !== 'ko' && rectsOverlap(hb, bb)){
+      applyHit(opp, p.owner, 24 * p.owner.dmgMul, 520);
+      cameraShake = Math.max(cameraShake, 14);
+      timeFreeze = Math.max(timeFreeze, 0.10);
+      spawnFx(opp.x, opp.y - 70, { count: 26, colors: [p.col, '#ffffff', '#D8FFFF'], spread: 900, size: 7 });
+      projs.splice(i, 1);
+      continue;
+    }
+    if (p.life <= 0 || p.x < -200 || p.x > W + 200) projs.splice(i, 1);
+  }
+}
+function drawProjs(){
+  projs.forEach(p => {
+    ctx.save();
+    const grd = ctx.createRadialGradient(p.x, p.y, 4, p.x, p.y, p.w * 0.7);
+    grd.addColorStop(0, '#ffffff');
+    grd.addColorStop(0.35, p.col);
+    grd.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = grd;
+    ctx.beginPath();
+    ctx.ellipse(p.x, p.y, p.w * 0.7, p.h * 0.85, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.ellipse(p.x, p.y, p.w * 0.32, p.h * 0.38, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  });
+}
+function updateSPUI(){
+  const s1 = document.getElementById('sp1');
+  const s2 = document.getElementById('sp2');
+  if (s1 && p1){ s1.style.width = p1.sp + '%'; s1.classList.toggle('full', p1.sp >= 100); }
+  if (s2 && p2){ s2.style.width = p2.sp + '%'; s2.classList.toggle('full', p2.sp >= 100); }
+  const b = document.getElementById('spBtn');
+  if (b && p1) b.classList.toggle('ready', p1.sp >= 100 && running);
+}
+
 // ===== Update =====
 function updateFighter(dt, f, opp) {
   if (f.state === 'ko') {
@@ -1005,7 +1097,7 @@ function updateFighter(dt, f, opp) {
 
   const inp = readInputs(f, opp);
   const onGround = f.y >= FLOOR - 0.5;
-  const busy = f.state === 'punch' || f.state === 'kick' || f.state === 'hit';
+  const busy = f.state === 'punch' || f.state === 'kick' || f.state === 'hit' || f.state === 'special';
 
   f.blocking = inp.block && onGround && !busy;
 
@@ -1025,8 +1117,11 @@ function updateFighter(dt, f, opp) {
   // 攻撃は地上でも空中でも出せる（ジャンプ攻撃対応）
   const punchEdge = inp.punch && !f.prevPunch;
   const kickEdge = inp.kick && !f.prevKick;
+  const spEdge = inp.sp && !f.prevSp;
   if (!busy && !f.blocking) {
-    if (punchEdge) {
+    if (spEdge && f.sp >= 100 && onGround) {
+      startSpecial(f);
+    } else if (punchEdge) {
       f.state = 'punch'; f.stateTime = 0; f.hitDealt = false;
       if (onGround) f.vx = 0;   // 地上は踏み込みで停止／空中はジャンプの勢いを保つ
     } else if (kickEdge) {
@@ -1036,6 +1131,7 @@ function updateFighter(dt, f, opp) {
   }
   f.prevPunch = inp.punch;
   f.prevKick = inp.kick;
+  f.prevSp = inp.sp;
 
   if (!busy && f.state !== 'jump') {
     f.facing = opp.x > f.x ? 1 : -1;
@@ -1071,6 +1167,15 @@ function updateFighter(dt, f, opp) {
       }
     }
     if (f.stateTime > 0.5) f.state = 'idle';
+  } else if (f.state === 'special') {
+    f.vx = 0;
+    // 溜め中のオーラ
+    if (Math.random() < 0.6) spawnFx(f.x, f.y - 70, { count: 2, colors: [specialColor(f.charId), '#ffffff'], spread: 260, size: 5 });
+    if (!f.hitDealt && f.stateTime > 0.26) {
+      f.hitDealt = true;
+      fireSpecial(f);
+    }
+    if (f.stateTime > 0.55) f.state = 'idle';
   } else if (f.state === 'hit') {
     if (f.stateTime > 0.28) f.state = 'idle';
   }
@@ -1097,11 +1202,23 @@ function drawStage() {
   const scNow = battleNow ? (canvas.height/H) : Math.min(canvas.width/W, canvas.height/H);
   const ext = Math.max(0, (canvas.width/scNow - W)/2);
   if(bg && bg.complete && bg.naturalWidth){
-    // 背景は縦横比を保ったまま画面の実横幅をカバー(横伸ばし歪み防止)
-    const bw = W + ext*2;
-    const bh = bw * (bg.naturalHeight / bg.naturalWidth);
-    const by = FLOOR - bh * conf.horizon;      // 地平線をFLOORに合わせる
-    ctx.drawImage(bg, -ext, by, bw, bh);
+    // 背景は縦横比を保ったまま描画(横伸ばし歪み防止)
+    let bw, bh, bx, by;
+    if(conf.anchor){
+      // 全景モード: 画像下端を固定し、画面幅もカバーできる最小サイズに
+      const visW = W + ext*2;
+      const asp = bg.naturalWidth / bg.naturalHeight;
+      bh = Math.max(conf.anchor, visW / asp);
+      bw = bh * asp;
+      bx = (W - bw) / 2;
+      by = conf.anchor - bh;
+    } else {
+      bw = W + ext*2;
+      bh = bw * (bg.naturalHeight / bg.naturalWidth);
+      bx = -ext;
+      by = FLOOR - bh * conf.horizon;          // 地平線をFLOORに合わせる
+    }
+    ctx.drawImage(bg, bx, by, bw, bh);
     // 地平線より下(地面)を背景の暗色で埋める
     ctx.fillStyle = conf.ground;
     ctx.fillRect(-ext, FLOOR-2, W+ext*2, H-(FLOOR-2));
@@ -1315,6 +1432,7 @@ function drawPosed(f, st, t){
   const cid=poseCharId(f);
   let pose = poseNameFor(st, cid);
   if(st==='hit') pose='idle';
+  if(st==='special') pose = POSE_META[cid]['special'] ? 'special' : 'punch';
   const im = POSE_IMGS[cid][pose] || POSE_IMGS[cid]['idle'];
   const meta = POSE_META[cid][pose] || POSE_META[cid]['idle'];
   const idleMeta = POSE_META[cid]['idle'];
@@ -1453,6 +1571,7 @@ function loop(t) {
   if (running && p1 && p2) {
     updateFighter(dt, p1, p2);
     updateFighter(dt, p2, p1);
+    updateProjs(dt);
     resolveCollision();
     timer -= dt;
     if (timer < 0) timer = 0;
@@ -1468,6 +1587,7 @@ function loop(t) {
   }
 
   updateFx(rawDt);
+  updateSPUI();
   if (cameraShake > 0) cameraShake -= rawDt * 40;
 
   // === Render ===
@@ -1496,6 +1616,7 @@ function loop(t) {
     drawFighter(order[0]);
     drawFighter(order[1]);
   }
+  drawProjs();
   drawFx();
 
   // scanlines overlay
