@@ -214,12 +214,12 @@ const ROSTER = [{"id": "nao", "name": "なお", "type": "パワー", "hpMul": 1.
 const IMGS = {};
 ROSTER.forEach(r=>{ const im=new Image(); im.src=r.img; IMGS[r.id]=im; });
 // ステージ背景プリロード
-const BG_DATA = {lion_night:'assets/stages/lion_night.webp', sky_day:'assets/stages/sky_day.webp', budokai:'assets/stages/budokai_w.webp'};
+const BG_DATA = {lion_night:'assets/stages/lion_night.webp', sky_day:'assets/stages/sky_day.webp', budokai:'assets/stages/budokai_bg.webp'};
 // 背景ごとの描画設定: horizon=地平線の縦位置 / ground=地平線より下の塗り色
 const BG_CONF = {
   lion_night:{anchor:358, horizon:1.0, ground:'#0a1422'},
   sky_day:   {anchor:358, horizon:1.0, ground:'#9fb8cc'},
-  budokai:   {anchor:312, horizon:1.0, ground:'#4a382a'},
+  budokai:   {venue:1, base:302, vh:340, pBase:0.9097, ground:'#4a382a'},
 };
 const BG_IMGS = {};
 Object.keys(BG_DATA).forEach(k=>{ const im=new Image(); im.src=BG_DATA[k]; BG_IMGS[k]=im; });
@@ -1330,7 +1330,21 @@ function drawStage() {
   if(bg && bg.complete && bg.naturalWidth){
     // 背景は縦横比を保ったまま描画(横伸ばし歪み防止)
     let bw, bh, bx, by;
-    if(conf.anchor){
+    if(conf.venue){
+      // 会場モード: 1枚絵を中央に等倍配置し、左右は鏡像で観客席をつなぐ(会場のダブりなし)
+      const asp = bg.naturalWidth / bg.naturalHeight;
+      bh = conf.vh;
+      bw = bh * asp;
+      bx = (W - bw) / 2;
+      by = conf.base - bh * conf.pBase;   // 塀の根元をbaseに固定
+      ctx.drawImage(bg, bx, by, bw, bh);
+      ctx.save(); ctx.translate(bx, 0); ctx.scale(-1, 1);
+      ctx.drawImage(bg, 0, by, bw, bh);   // 左隣(鏡像)
+      ctx.restore();
+      ctx.save(); ctx.translate(bx + bw, 0); ctx.scale(-1, 1);
+      ctx.drawImage(bg, -bw, by, bw, bh); // 右隣(鏡像)
+      ctx.restore();
+    } else if(conf.anchor){
       // 全景モード: 画像下端を固定し、画面幅もカバーできる最小サイズに
       const visW = W + ext*2;
       const asp = bg.naturalWidth / bg.naturalHeight;
@@ -1542,9 +1556,9 @@ function drawFighter(f) {
     const airH = Math.max(0, FLOOR - f.y);
     const k = Math.max(0.25, 1 - airH/280);
     ctx.save();
-    ctx.fillStyle = `rgba(0,0,0,${(0.30*k).toFixed(3)})`;
+    ctx.fillStyle = `rgba(0,0,0,${(0.38*k).toFixed(3)})`;
     ctx.beginPath();
-    ctx.ellipse(f.x, FLOOR + 7, 54*k, 9*k, 0, 0, Math.PI*2);
+    ctx.ellipse(f.x, FLOOR + 6, 60*k, 10*k, 0, 0, Math.PI*2);
     ctx.fill();
     ctx.restore();
   }
