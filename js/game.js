@@ -214,12 +214,12 @@ const ROSTER = [{"id": "nao", "name": "なお", "type": "パワー", "hpMul": 1.
 const IMGS = {};
 ROSTER.forEach(r=>{ const im=new Image(); im.src=r.img; IMGS[r.id]=im; });
 // ステージ背景プリロード
-const BG_DATA = {lion_night:'assets/stages/lion_night.webp', sky_day:'assets/stages/sky_day.webp', budokai:'assets/stages/budokai_bg2.webp'};
+const BG_DATA = {lion_night:'assets/stages/lion_night.webp', sky_day:'assets/stages/sky_day.webp', budokai:'assets/stages/budokai_bg3.webp'};
 // 背景ごとの描画設定: horizon=地平線の縦位置 / ground=地平線より下の塗り色
 const BG_CONF = {
   lion_night:{anchor:358, horizon:1.0, ground:'#0a1422'},
   sky_day:   {anchor:358, horizon:1.0, ground:'#9fb8cc'},
-  budokai:   {venue:1, base:302, vh:396, pBase:0.9097, ground:'#4a382a'},
+  budokai:   {venue:1, base:302, vh:320, pBase:1.0, ground:'#4a382a'},
 };
 const BG_IMGS = {};
 Object.keys(BG_DATA).forEach(k=>{ const im=new Image(); im.src=BG_DATA[k]; BG_IMGS[k]=im; });
@@ -716,7 +716,7 @@ let SEL_STAGE = 'A';  // A=獅子の聖殿 / B=蒼穹の塔
 const STAGE_INFO = [
   { id:'A', name:'蒼雨の電脳都市', preview:'assets/stages/lion_night.webp' },
   { id:'B', name:'蒼穹の摩天楼', preview:'assets/stages/sky_day.webp' },
-  { id:'C', name:'天下一武道会', preview:'assets/stages/budokai_bg2.webp' },
+  { id:'C', name:'天下一武道会', preview:'assets/stages/budokai_bg3.webp' },
 ];
 function buildStageGrid(){
   const grid=document.getElementById('stageGrid');
