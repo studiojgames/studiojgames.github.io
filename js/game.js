@@ -39,6 +39,10 @@ const SFX = {
   special(){ this.tone(180,0.3,'sawtooth',0.4,900); this.tone(90,0.3,'sine',0.5,400); this.noise(0.2,0.25); },
   specialFire(){ this.noise(0.25,0.5); this.tone(420,0.25,'sawtooth',0.45,60); this.tone(60,0.35,'sine',0.6,30); },
   ko(){ this.tone(200,0.5,'sawtooth',0.3,60); this.noise(0.4,0.35); },
+  // なお専用メカ音
+  mech(){ this.tone(220,0.16,'sawtooth',0.16,880); this.tone(1400,0.05,'square',0.07,400); },
+  clank(){ this.tone(2400,0.08,'square',0.12,300); this.noise(0.10,0.18); this.tone(160,0.22,'sine',0.22,70); },
+  mechJump(){ this.tone(140,0.3,'sawtooth',0.18,700); },
   block(){ this.tone(800,0.06,'square',0.12); this.tone(600,0.06,'square',0.10); },
   thunder(){
     // 雷鳴: 低くゴロゴロ鳴る長めのノイズ + 重低音のうねり
@@ -372,6 +376,9 @@ let lastT = 0;
 let roundEnding = false;
 let cameraShake = 0;
 let timeFreeze = 0;
+let slowMo = 0;          // KOスローモーション残り時間
+let cutIn = null;        // 必殺技カットイン {t,dur,f,color}
+const rings = [];        // ヒット衝撃波リング
 
 const fx = [];
 function spawnFx(x, y, opts={}) {
@@ -463,6 +470,8 @@ function startRound() {
 }
 
 function endMatch(playerWon) {
+  const w = playerWon ? p1 : p2;
+  if (w) playVoice(w.charId, 'win');
   const me = rosterById(SEL_P1);
   const lines = playerWon ? me.win : me.lose;
   const msg = lines[Math.floor(Math.random()*lines.length)];
@@ -1000,6 +1009,13 @@ function applyHit(target, attacker, dmg, kb) {
   if (target.blocking) { SFX.block(); }
   else if (dmg >= 12) { SFX.kick(); }
   else { SFX.punch(); }
+  if (!target.blocking) {
+    rings.push({ x: attacker.x + attacker.facing * 50, y: target.y - 60, t: 0, dur: 0.22, r1: dmg >= 12 ? 64 : 44, color: '#ffffff' });
+    attacker.comboN = (attacker.comboCD > 0) ? (attacker.comboN || 0) + 1 : 1;
+    attacker.comboCD = 1.1;
+    if (attacker.charId === 'nao') SFX.clank();
+    if (dmg >= 10 && Math.random() < 0.5) playVoice(target.charId, 'hit');
+  }
   cameraShake = Math.max(cameraShake, blocked ? 4 : 10);
   timeFreeze = Math.max(timeFreeze, blocked ? 0.04 : 0.07);
   spawnFx(
@@ -1014,7 +1030,9 @@ function applyHit(target, attacker, dmg, kb) {
     target.stateTime = 0;
     target.vy = -300;
     target.vx = attacker.facing * 250;
-    cameraShake = 18;
+    cameraShake = 24;
+    slowMo = 1.0;
+    shout('K.O.!!', 1000);
     SFX.ko();
   }
 }
@@ -1026,14 +1044,35 @@ const SPECIAL_COLORS = {
   arya:'#6ee7b7', J:'#36d1ff', otome:'#ff9ad5'
 };
 function specialColor(id){ return SPECIAL_COLORS[id] || '#9EEFFF'; }
+// ===== キャラボイス(assets/voice/に音声ファイルがあれば自動で鳴る・無ければ無音) =====
+const VOICE_KINDS = { attack: 3, hit: 2, special: 1, win: 1 };
+const VOICE_CACHE = {};
+function playVoice(cid, kind){
+  if(!SFX.on) return;
+  const n = VOICE_KINDS[kind] || 1;
+  const key = n > 1 ? `${cid}_${kind}${1 + Math.floor(Math.random()*n)}` : `${cid}_${kind}`;
+  let a = VOICE_CACHE[key];
+  if(a === false) return;
+  if(!a){
+    a = new Audio(`assets/voice/${key}.mp3`);
+    a.addEventListener('error', ()=>{ VOICE_CACHE[key] = false; });
+    VOICE_CACHE[key] = a;
+  }
+  if(VOICE_CACHE[key] === false) return;
+  a.volume = Math.max(0, Math.min(1, 0.9 * SFX.seVol));
+  try{ a.currentTime = 0; const p = a.play(); if(p && p.catch) p.catch(()=>{}); }catch(e){}
+}
 const projs = [];
 function startSpecial(f){
   f.state = 'special'; f.stateTime = 0; f.hitDealt = false;
   f.specialKind = (f.charId === 'rice') ? 'fishing' : 'beam';
   f.sp = 0; f.vx = 0;
-  timeFreeze = Math.max(timeFreeze, 0.10);
+  cutIn = { t: 0, dur: 0.72, f, color: specialColor(f.charId) };
+  timeFreeze = Math.max(timeFreeze, 0.62);
   cameraShake = Math.max(cameraShake, 6);
   SFX.special();
+  playVoice(f.charId, 'special');
+  if (f.charId === 'nao') SFX.mech();
   spawnFx(f.x, f.y - 70, { count: 18, colors: [specialColor(f.charId), '#ffffff'], spread: 700, size: 6 });
 }
 function fireSpecial(f){
@@ -1067,6 +1106,8 @@ function fishSlamHit(opp, f){
   if (opp.hp <= 0) {
     opp.state = 'ko'; opp.stateTime = 0;
     opp.vy = -260; opp.vx = f.facing * 220;
+    slowMo = 1.0;
+    shout('K.O.!!', 1000);
     SFX.ko();
   } else {
     opp.state = 'hit'; opp.stateTime = 0;
@@ -1237,6 +1278,7 @@ function updateFighter(dt, f, opp) {
       f.vy = JUMP_V*f.jumpMul;
       f.state = 'jump';
       SFX.jump();
+      if (f.charId === 'nao') SFX.mechJump();
     }
   }
   // 攻撃は地上でも空中でも出せる（ジャンプ攻撃対応）
@@ -1249,9 +1291,13 @@ function updateFighter(dt, f, opp) {
     } else if (punchEdge) {
       f.state = 'punch'; f.stateTime = 0; f.hitDealt = false;
       if (onGround) f.vx = 0;   // 地上は踏み込みで停止／空中はジャンプの勢いを保つ
+      if (f.charId === 'nao') SFX.mech();
+      if (Math.random() < 0.35) playVoice(f.charId, 'attack');
     } else if (kickEdge) {
       f.state = 'kick'; f.stateTime = 0; f.hitDealt = false;
       if (onGround) f.vx = 0;
+      if (f.charId === 'nao') SFX.mech();
+      if (Math.random() < 0.35) playVoice(f.charId, 'attack');
     }
   }
   f.prevPunch = inp.punch;
@@ -1673,6 +1719,102 @@ function drawFx() {
   ctx.shadowBlur = 0;
 }
 
+// ヒット衝撃波リング
+function drawRings(rdt){
+  for (let i = rings.length - 1; i >= 0; i--){
+    const r = rings[i];
+    r.t += rdt;
+    const k = r.t / r.dur;
+    if (k >= 1){ rings.splice(i,1); continue; }
+    ctx.save();
+    ctx.globalAlpha = (1 - k) * 0.9;
+    ctx.strokeStyle = r.color;
+    ctx.lineWidth = 4 * (1 - k) + 1;
+    ctx.shadowColor = r.color; ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.arc(r.x, r.y, 8 + r.r1 * (1 - Math.pow(1 - k, 2)), 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+// コンボ表示
+function drawCombo(){
+  [p1, p2].forEach((f, i) => {
+    if (!f || !f.comboN || f.comboN < 2 || !(f.comboCD > 0.35)) return;
+    const x = i === 0 ? 130 : W - 130;
+    const pop = 1 + Math.max(0, (f.comboCD - 0.95)) * 3;
+    ctx.save();
+    ctx.translate(x, 120);
+    ctx.scale(pop, pop);
+    ctx.font = 'bold 26px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffd23e';
+    ctx.shadowColor = '#ff7a00'; ctx.shadowBlur = 14;
+    ctx.fillText(`${f.comboN} HITS!`, 0, 0);
+    ctx.restore();
+  });
+}
+// 必殺技カットイン
+function drawCutIn(rdt){
+  if (!cutIn) return;
+  cutIn.t += rdt;
+  if (cutIn.t >= cutIn.dur){ cutIn = null; return; }
+  const c = cutIn, f = c.f;
+  const e = Math.min(1, c.t / 0.08, (c.dur - c.t) / 0.15);  // フェード包絡
+  ctx.save();
+  // 暗転
+  ctx.fillStyle = `rgba(2,6,14,${(0.55 * e).toFixed(3)})`;
+  ctx.fillRect(-200, 0, W + 400, H);
+  // 集中線
+  ctx.globalAlpha = 0.14 * e;
+  ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
+  for (let i = 0; i < 22; i++){
+    const a = (i / 22) * Math.PI * 2 + 0.3;
+    ctx.beginPath();
+    ctx.moveTo(W/2 + Math.cos(a) * 90, H/2 + Math.sin(a) * 60);
+    ctx.lineTo(W/2 + Math.cos(a) * 720, H/2 + Math.sin(a) * 500);
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  // キャラカラーの斜めバンド
+  ctx.save();
+  ctx.translate(W/2, H/2); ctx.rotate(-0.10);
+  ctx.fillStyle = c.color;
+  ctx.globalAlpha = 0.22 * e;
+  ctx.shadowColor = c.color; ctx.shadowBlur = 40;
+  ctx.fillRect(-W, -78, W * 2, 156);
+  ctx.restore();
+  // ポーズ画像をサイドからスライドイン
+  const img = (POSE_IMGS[f.charId] && (POSE_IMGS[f.charId]['special'] || POSE_IMGS[f.charId]['punch'])) || null;
+  if (img && img.complete && img.naturalWidth){
+    const isP1 = (f === p1);
+    const k = Math.min(1, c.t / 0.16);
+    const ease = 1 - Math.pow(1 - k, 3);
+    const hgt = H * 0.92;
+    const wdt = hgt * img.naturalWidth / img.naturalHeight;
+    const tx = isP1 ? (-wdt + (W * 0.34 + wdt) * ease) : (W + wdt - (W * 0.34 + wdt) * ease);
+    ctx.save();
+    ctx.globalAlpha = Math.min(1, e * 1.2);
+    ctx.translate(tx, H - hgt * 0.98);
+    if (!isP1) ctx.scale(-1, 1);
+    ctx.shadowColor = c.color; ctx.shadowBlur = 30;
+    ctx.drawImage(img, isP1 ? 0 : -wdt, 0, wdt, hgt);
+    ctx.restore();
+  }
+  // 「必殺!!」テキスト
+  const pop = 1 + Math.max(0, 1 - c.t / 0.12) * 0.8;
+  ctx.save();
+  ctx.translate(W/2, H * 0.22);
+  ctx.scale(pop, pop);
+  ctx.font = 'bold 56px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#ffffff';
+  ctx.shadowColor = c.color; ctx.shadowBlur = 28;
+  ctx.fillText('必殺!!', 0, 0);
+  ctx.restore();
+  ctx.restore();
+}
+
 function updateFx(dt) {
   for (let i = fx.length - 1; i >= 0; i--) {
     const p = fx[i];
@@ -1718,6 +1860,9 @@ function loop(t) {
     timeFreeze -= rawDt;
     dt = 0;
   }
+  if (slowMo > 0) { slowMo -= rawDt; dt *= 0.35; }
+  if (p1 && p1.comboCD > 0) p1.comboCD -= rawDt;
+  if (p2 && p2.comboCD > 0) p2.comboCD -= rawDt;
 
   if (running && p1 && p2) {
     updateFighter(dt, p1, p2);
@@ -1772,6 +1917,9 @@ function loop(t) {
   drawHooks();
   drawProjs();
   drawFx();
+  drawRings(rawDt);
+  drawCombo();
+  drawCutIn(rawDt);
 
   // scanlines overlay
   ctx.globalAlpha = 0.08;
