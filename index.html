@@ -30,6 +30,7 @@
     <div class="center-hud">
       <div class="timer" id="timer">60</div>
       <div class="round" id="round">ROUND 1</div>
+      <button class="pause-btn" id="pauseBtn" aria-label="ポーズ">❚❚</button>
     </div>
     <div class="health-block right">
       <div class="name right"><span class="wins" id="wins2"><span></span><span></span></span><span id="nm2">なお</span></div>
@@ -40,11 +41,11 @@
 
   <audio id="titleBgm" src="assets/bgm/title.mp3?v=2" loop preload="auto"></audio>
   <audio id="lobbyBgm" src="assets/bgm/lobby.mp3?v=2" loop preload="auto"></audio>
-  <audio id="battleBgm" src="assets/bgm/battle_budokai.mp3?v=1" loop preload="none"></audio>
+  <audio id="battleBgm" src="assets/bgm/battle_budokai.mp3?v=2" loop preload="none"></audio>
   <canvas id="game"></canvas>
   <div class="shout" id="shout">FIGHT!</div>
 
-  <div class="controls">
+  <div class="controls" id="controls">
     <div class="pad dir">
       <button class="btn move b-jump" data-key="w">JUMP</button>
       <button class="btn move b-left" data-key="a">◄</button>
@@ -176,6 +177,59 @@
       <div class="set-ver">Red Fight Action  Ver 1.0.0 ©ReD ALLIANCE</div>
     </div>
   </div>
+
+  <!-- ===== ポーズメニュー(バトル中) ===== -->
+  <div class="overlay pause-screen hidden" id="pauseOverlay">
+    <div class="pause-inner">
+      <div class="pause-title">ポーズメニュー</div>
+      <button class="pause-item" id="pauseResumeBtn"><span>バトルに戻る</span></button>
+      <button class="pause-item" id="pauseSoundBtn"><span>サウンド設定</span><em id="pauseSoundVal">5</em></button>
+      <button class="pause-item" id="pauseConfigBtn"><span>ボタンコンフィグ</span></button>
+      <button class="pause-item danger" id="pauseQuitBtn"><span>バトルを終了する</span></button>
+    </div>
+  </div>
+
+  <!-- ===== ボタンコンフィグ ===== -->
+  <div class="overlay config-screen hidden" id="configOverlay">
+    <div class="set-inner">
+      <div class="set-title">ボタンコンフィグ</div>
+
+      <div class="set-row col">
+        <label>操作ボタンの配置</label>
+        <div class="set-seg" id="cfgLayoutSeg">
+          <button data-layout="normal" class="on">移動=左 / 攻撃=右</button>
+          <button data-layout="swap">攻撃=左 / 移動=右</button>
+        </div>
+      </div>
+
+      <div class="set-row col">
+        <label>ボタンの大きさ</label>
+        <div class="set-seg" id="cfgSizeSeg">
+          <button data-size="s">小</button>
+          <button data-size="m" class="on">中</button>
+          <button data-size="l">大</button>
+        </div>
+      </div>
+
+      <div class="set-row col">
+        <label>ボタンの透明度 <span class="set-val" id="cfgOpacityVal">100</span></label>
+        <input type="range" id="cfgOpacitySlider" min="35" max="100" value="100">
+      </div>
+
+      <div class="set-howto">
+        <div class="set-howto-title">コマンドリスト</div>
+        <div class="set-howto-body">
+          <b>移動</b>：◄ ► / <b>ジャンプ</b>：JUMP<br>
+          <b>パンチ</b>：PUNCH ／ <b>キック</b>：KICK<br>
+          <b>ガード</b>：BLOCK を押している間<br>
+          <b>必殺技</b>：必殺ゲージ満タンで「必殺」ボタン
+        </div>
+      </div>
+
+      <button class="start-btn" id="cfgCloseBtn">▶ 閉じる</button>
+    </div>
+  </div>
+
   <button id="settingsBtn" style="position:absolute;top:8px;right:8px;z-index:300;background:rgba(0,0,0,0.6);color:#fff;border:1px solid rgba(255,255,255,0.35);border-radius:8px;padding:6px 11px;font-size:20px;cursor:pointer;display:none;">⚙️</button>
 </div>
 
