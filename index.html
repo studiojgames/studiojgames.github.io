@@ -67,6 +67,7 @@
     <div class="ts-logo"><div class="ts-beam"></div><img src="assets/ui/logo.webp"><div class="wet"></div><div class="sheen"></div><div class="ts-drip"><i style="left:46.0%;height:17px;animation-duration:2.5s;animation-delay:2.77s"></i><i style="left:46.0%;height:18px;animation-duration:2.97s;animation-delay:0.57s"></i><i style="left:48.0%;height:17px;animation-duration:2.58s;animation-delay:0.56s"></i><i style="left:33.5%;height:20px;animation-duration:1.75s;animation-delay:2.43s"></i><i style="left:11.5%;height:20px;animation-duration:3.17s;animation-delay:2.89s"></i><i style="left:70.1%;height:18px;animation-duration:2.64s;animation-delay:1.87s"></i><i style="left:13.3%;height:19px;animation-duration:1.66s;animation-delay:2.64s"></i><i style="left:10.5%;height:13px;animation-duration:2.34s;animation-delay:1.32s"></i><i style="left:51.6%;height:20px;animation-duration:2.62s;animation-delay:1.5s"></i><i style="left:15.1%;height:18px;animation-duration:2.65s;animation-delay:1.22s"></i><i style="left:91.6%;height:15px;animation-duration:2.94s;animation-delay:2.12s"></i><i style="left:71.7%;height:19px;animation-duration:2.42s;animation-delay:0.09s"></i><i style="left:72.4%;height:16px;animation-duration:2.24s;animation-delay:2.54s"></i><i style="left:13.6%;height:13px;animation-duration:1.63s;animation-delay:2.05s"></i></div></div>
     <button class="ts-start" id="startBtn"><span class="bk l"></span><span class="lb">PRESS START</span><span class="bk r"></span></button>
     <button class="ts-settings" id="titleSettingsBtn">SETTINGS</button>
+    <button class="ts-minigame" id="titleQuestBtn">▶ ミニゲーム</button>
   </div>
 
   <div class="overlay menu-screen sel-slide hidden" id="selOverlay">
@@ -231,8 +232,29 @@
   </div>
 
   <button id="settingsBtn" style="position:absolute;top:8px;right:8px;z-index:300;background:rgba(0,0,0,0.6);color:#fff;border:1px solid rgba(255,255,255,0.35);border-radius:8px;padding:6px 11px;font-size:20px;cursor:pointer;display:none;">⚙️</button>
+
+  <!-- ===== ReD QUEST: ワープゲート・ラッシュ ===== -->
+  <div class="quest-screen hidden" id="questScreen">
+    <canvas id="questCanvas"></canvas>
+    <button class="quest-exit" id="qExit" aria-label="やめる">✕</button>
+    <div class="quest-controls">
+      <div class="qc-left">
+        <button class="qbtn" id="qLeft">◄</button>
+        <button class="qbtn" id="qRight">►</button>
+      </div>
+      <div class="qc-right">
+        <button class="qbtn jump" id="qJump">JUMP</button>
+      </div>
+    </div>
+    <div class="quest-result hidden" id="questResult">
+      <div class="qr-inner" id="questResultBody"></div>
+      <button class="start-btn" id="qResultClose">▶ タイトルへ</button>
+    </div>
+  </div>
+
 </div>
 
-<script src="js/game.js?v=18"></script>
+<script src="js/game.js?v=19"></script>
+<script src="js/quest.js?v=1"></script>
 </body>
 </html>
