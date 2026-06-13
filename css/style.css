@@ -925,3 +925,81 @@ body.in-battle .pause-btn{ display:block; }
 .controls.cfg-swap .pad{ direction:ltr; }
 .controls.cfg-size-s .btn{ min-height:38px; font-size:9px; }
 .controls.cfg-size-l .btn{ min-height:56px; font-size:12px; }
+
+/* ===== タイトルの「ミニゲーム」ボタン ===== */
+.ts-minigame{
+  position:absolute; bottom:11.5%; left:50%; transform:translateX(-50%); z-index:41;
+  background:linear-gradient(180deg, rgba(255,120,60,.85), rgba(180,40,20,.9));
+  border:1.5px solid #ffd0a0; border-radius:24px; padding:10px 26px; cursor:pointer;
+  font-family:'Orbitron','Arial Narrow',sans-serif; font-size:14px; font-weight:800; letter-spacing:.12em;
+  color:#fff; text-shadow:0 0 8px rgba(255,160,80,.8);
+  box-shadow:0 0 18px rgba(255,120,60,.55); white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;
+}
+.ts-minigame:active{ transform:translateX(-50%) scale(.95); }
+
+/* ===== ReD QUEST 画面 ===== */
+.quest-screen{ position:fixed; inset:0; z-index:500; background:#04080d; }
+.quest-screen.hidden{ display:none; }
+#questCanvas{ display:block; width:100%; height:100%; }
+.quest-exit{
+  position:absolute; top:max(10px,env(safe-area-inset-top)); right:14px; z-index:520;
+  width:42px; height:42px; border-radius:50%; cursor:pointer;
+  background:rgba(8,18,32,.8); color:#9EEFFF; border:1.5px solid rgba(120,210,255,.5);
+  font-size:20px; line-height:1; box-shadow:0 0 12px rgba(80,190,255,.4);
+}
+.quest-exit:active{ transform:scale(.9); }
+
+.quest-controls{
+  position:absolute; left:0; right:0; bottom:0; z-index:520;
+  display:flex; justify-content:space-between; align-items:flex-end;
+  padding:0 18px max(18px,env(safe-area-inset-bottom)); pointer-events:none;
+}
+.quest-controls .qc-left{ display:flex; gap:14px; pointer-events:auto; }
+.quest-controls .qc-right{ pointer-events:auto; }
+.qbtn{
+  width:74px; height:74px; border-radius:50%; cursor:pointer;
+  font-family:'Orbitron',sans-serif; font-size:24px; font-weight:800; color:#fff;
+  background:linear-gradient(180deg, rgba(26,163,200,.9), rgba(10,61,102,.95));
+  border:2px solid #9EEFFF; box-shadow:0 0 14px rgba(80,190,255,.45);
+  text-shadow:0 0 8px rgba(120,220,255,.7); touch-action:none; user-select:none;
+}
+.qbtn.jump{
+  width:96px; height:96px; font-size:18px;
+  background:linear-gradient(180deg, rgba(255,150,60,.9), rgba(180,60,20,.95));
+  border-color:#ffd0a0; box-shadow:0 0 16px rgba(255,140,60,.5);
+}
+.qbtn.on{ transform:scale(.92); filter:brightness(1.2); }
+
+/* QUEST 結果 */
+.quest-result{
+  position:absolute; inset:0; z-index:540; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:18px;
+  background:radial-gradient(ellipse at center, rgba(6,32,58,.92), rgba(4,8,13,.96));
+}
+.quest-result.hidden{ display:none; }
+.qr-inner{ text-align:center; font-family:'Orbitron',sans-serif; color:#dff4ff; }
+.qr-title{ font-size:38px; font-weight:900; letter-spacing:.1em; color:#bfefff;
+  text-shadow:0 0 18px rgba(120,220,255,.7); margin-bottom:14px; }
+.qr-rank{ font-size:24px; margin:8px 0; }
+.qr-rank b{ font-size:48px; color:#ffd23c; text-shadow:0 0 20px rgba(255,210,60,.8); }
+.qr-stat{ font-size:18px; margin:6px 0; color:#cfe9ff; }
+.qr-stat b{ color:#7fd8ff; }
+
+/* QUEST キャラ選択 */
+.quest-pick{
+  position:fixed; inset:0; z-index:560; display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(ellipse at center, rgba(6,32,58,.94), rgba(4,8,13,.97));
+}
+.quest-pick.hidden{ display:none; }
+.qp-inner{ width:92%; max-width:680px; text-align:center; font-family:'Orbitron',sans-serif; color:#dff4ff; }
+.qp-title{ font-size:20px; font-weight:800; letter-spacing:.14em; color:#bfefff;
+  text-shadow:0 0 14px rgba(120,220,255,.6); margin-bottom:16px; }
+.qp-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:18px; }
+.qp-cell{ background:rgba(10,26,44,.7); border:1.5px solid rgba(120,210,255,.35); border-radius:12px;
+  padding:8px 4px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:5px; transition:all .14s; }
+.qp-cell img{ width:100%; aspect-ratio:1; object-fit:cover; border-radius:8px; }
+.qp-cell span{ font-size:12px; color:#cfe9ff; }
+.qp-cell:active{ transform:scale(.95); }
+.qp-cell:hover{ border-color:#9EEFFF; box-shadow:0 0 12px rgba(120,220,255,.4); }
+@media (max-width:520px){ .qp-grid{ grid-template-columns:repeat(3,1fr); } }
