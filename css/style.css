@@ -872,3 +872,56 @@ body.in-battle .controls .pad.atk{
   0%,100%{ box-shadow:0 0 14px rgba(255,200,60,.6), inset 0 0 10px rgba(255,255,255,.25); }
   50%{ box-shadow:0 0 30px rgba(255,220,90,1), inset 0 0 16px rgba(255,255,255,.45); }
 }
+
+/* ===== PAUSE ボタン(バトル中・中央HUD下) ===== */
+.pause-btn{
+  margin:3px auto 0; display:none;
+  background:linear-gradient(180deg,rgba(20,40,64,.92),rgba(8,18,32,.95));
+  color:#9EEFFF; border:1.5px solid rgba(120,210,255,.5);
+  border-radius:8px; padding:3px 14px; font-size:13px; line-height:1.2;
+  letter-spacing:.18em; cursor:pointer; pointer-events:auto;
+  box-shadow:0 0 12px rgba(80,190,255,.45); text-shadow:0 0 8px rgba(120,220,255,.7);
+}
+.pause-btn:active{ transform:scale(.92); }
+body.in-battle .pause-btn{ display:block; }
+
+/* ===== ポーズメニュー ===== */
+.overlay.pause-screen{ display:flex; align-items:center; justify-content:center; z-index:340; }
+.overlay.pause-screen.hidden{ display:none; }
+.pause-inner{
+  position:relative; z-index:2; width:88%; max-width:520px;
+  background:linear-gradient(160deg, rgba(8,16,26,.96), rgba(4,8,13,.97));
+  border:1px solid rgba(120,210,255,.3); border-radius:16px;
+  box-shadow:0 0 44px rgba(60,160,220,.3), inset 0 0 30px rgba(40,120,180,.08);
+  padding:20px 18px; color:#dff4ff;
+  font-family:'Orbitron','Arial Narrow',sans-serif;
+}
+.pause-title{
+  text-align:center; font-size:22px; letter-spacing:.28em; font-weight:800;
+  color:#bfefff; text-shadow:0 0 14px rgba(120,220,255,.6);
+  padding-bottom:14px; margin-bottom:14px;
+  border-bottom:1px solid rgba(120,210,255,.22);
+}
+.pause-item{
+  display:flex; align-items:center; justify-content:space-between; width:100%;
+  background:rgba(10,26,44,.7); color:#dff4ff;
+  border:1.5px solid rgba(120,210,255,.32); border-radius:10px;
+  padding:15px 18px; margin:9px 0; font-size:16px; font-weight:700;
+  letter-spacing:.08em; cursor:pointer; transition:all .14s;
+  font-family:'Orbitron','Arial Narrow',sans-serif;
+}
+.pause-item em{ font-style:normal; color:#7fd8ff; font-weight:700; }
+.pause-item:active{ transform:scale(.97); }
+.pause-item:hover{ border-color:#9EEFFF; box-shadow:0 0 14px rgba(120,220,255,.4); }
+.pause-item.danger{ border-color:rgba(255,120,140,.45); color:#ffd0d6; }
+.pause-item.danger:hover{ border-color:#ff9eae; box-shadow:0 0 14px rgba(255,90,120,.5); }
+
+/* ===== ボタンコンフィグ ===== */
+.overlay.config-screen{ display:flex; align-items:center; justify-content:center; z-index:340; }
+.overlay.config-screen.hidden{ display:none; }
+
+/* 操作ボタンの配置・サイズ・透明度(.controls に付与) */
+.controls.cfg-swap{ direction:rtl; }
+.controls.cfg-swap .pad{ direction:ltr; }
+.controls.cfg-size-s .btn{ min-height:38px; font-size:9px; }
+.controls.cfg-size-l .btn{ min-height:56px; font-size:12px; }
