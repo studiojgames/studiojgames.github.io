@@ -231,7 +231,7 @@ const PLATFORM_IMG = new Image(); PLATFORM_IMG.src = 'assets/stages/platform.web
 const BUDOKAI_FLOOR_IMG = new Image(); BUDOKAI_FLOOR_IMG.src = 'assets/stages/budokai_floor.webp';
 let CUR_BG = 'lion_night';
 let STAGE_PLACE = 'A';  // 試合の場所(A=獅子の聖殿 / B=蒼穹の塔)
-const POSE_DATA = {"J": {"idle": {"b64": "assets/poses/J_idle.webp?v=18", "w": 286, "h": 475, "cropW": 286, "cropH": 475, "bodyH": 475, "footX": 0.489, "footY": 1.0, "scaleAdj": 1.152, "fmt": "webp"}, "walk": {"b64": "assets/poses/J_walk.webp?v=18", "w": 261, "h": 507, "cropW": 261, "cropH": 507, "bodyH": 475, "footX": 0.662, "footY": 1.0, "scaleAdj": 1.152, "fmt": "webp"}, "punch": {"b64": "assets/poses/J_punch.webp?v=18", "w": 335, "h": 486, "cropW": 335, "cropH": 486, "bodyH": 475, "footX": 0.408, "footY": 1.0, "scaleAdj": 1.152, "fmt": "webp"}, "kick": {"b64": "assets/poses/J_kick.webp?v=18", "w": 364, "h": 447, "cropW": 364, "cropH": 447, "bodyH": 475, "footX": 0.331, "footY": 1.0, "scaleAdj": 1.152, "fmt": "webp"}, "guard": {"b64": "assets/poses/J_guard.webp?v=18", "w": 217, "h": 451, "cropW": 217, "cropH": 451, "bodyH": 475, "footX": 0.128, "footY": 1.0, "scaleAdj": 1.152, "fmt": "webp"}, "down": {"b64": "assets/poses/J_down.webp?v=18", "w": 499, "h": 149, "cropW": 499, "cropH": 149, "bodyH": 475, "footX": 0.5, "footY": 1.0, "scaleAdj": 1.152, "fmt": "webp"}, "special": {"b64": "assets/poses/J_special.webp?v=18", "w": 550, "h": 455, "cropW": 550, "cropH": 455, "bodyH": 475, "footX": 0.484, "footY": 1.0, "scaleAdj": 1.152, "fmt": "webp"}}, "char": {"idle": {"b64": "assets/poses/char_idle.webp?v=18", "w": 253, "h": 432, "cropW": 253, "cropH": 432, "bodyH": 432, "footX": 0.188, "footY": 1.0, "scaleAdj": 0.942, "fmt": "webp"}, "walk": {"b64": "assets/poses/char_walk.webp?v=18", "w": 278, "h": 441, "cropW": 278, "cropH": 441, "bodyH": 432, "footX": 0.524, "footY": 1.0, "scaleAdj": 0.942, "fmt": "webp"}, "punch": {"b64": "assets/poses/char_punch.webp?v=18", "w": 300, "h": 435, "cropW": 300, "cropH": 435, "bodyH": 432, "footX": 0.616, "footY": 1.0, "scaleAdj": 0.942, "fmt": "webp"}, "kick": {"b64": "assets/poses/char_kick.webp?v=18", "w": 301, "h": 405, "cropW": 301, "cropH": 405, "bodyH": 432, "footX": 0.377, "footY": 1.0, "scaleAdj": 0.942, "fmt": "webp"}, "guard": {"b64": "assets/poses/char_guard.webp?v=18", "w": 234, "h": 417, "cropW": 234, "cropH": 417, "bodyH": 432, "footX": 0.119, "footY": 1.0, "scaleAdj": 0.942, "fmt": "webp"}, "down": {"b64": "assets/poses/char_down.webp?v=18", "w": 466, "h": 179, "cropW": 466, "cropH": 179, "bodyH": 432, "footX": 0.5, "footY": 1.0, "scaleAdj": 0.942, "fmt": "webp"}}, "nao": {"idle": {"b64": "assets/poses/nao_idle.webp?v=18", "w": 320, "h": 404, "cropW": 320, "cropH": 404, "bodyH": 404, "footX": 0.402, "footY": 1.0, "scaleAdj": 1.151, "fmt": "webp"}, "walk": {"b64": "assets/poses/nao_walk.webp?v=18", "w": 313, "h": 403, "cropW": 313, "cropH": 403, "bodyH": 404, "footX": 0.421, "footY": 1.0, "scaleAdj": 1.151, "fmt": "webp"}, "punch": {"b64": "assets/poses/nao_punch.webp?v=18", "w": 396, "h": 403, "cropW": 396, "cropH": 403, "bodyH": 404, "footX": 0.343, "footY": 1.0, "scaleAdj": 1.151, "fmt": "webp"}, "kick": {"b64": "assets/poses/nao_kick.webp?v=18", "w": 364, "h": 388, "cropW": 364, "cropH": 388, "bodyH": 404, "footX": 0.128, "footY": 1.0, "scaleAdj": 1.151, "fmt": "webp"}, "guard": {"b64": "assets/poses/nao_guard.webp?v=18", "w": 303, "h": 382, "cropW": 303, "cropH": 382, "bodyH": 404, "footX": 0.239, "footY": 1.0, "scaleAdj": 1.151, "fmt": "webp"}, "down": {"b64": "assets/poses/nao_down.webp?v=18", "w": 418, "h": 184, "cropW": 418, "cropH": 184, "bodyH": 404, "footX": 0.5, "footY": 1.0, "scaleAdj": 1.151, "fmt": "webp"}, "special": {"b64": "assets/poses/nao_special.webp?v=18", "w": 349, "h": 379, "cropW": 349, "cropH": 379, "bodyH": 404, "footX": 0.312, "footY": 1.0, "scaleAdj": 1.151, "fmt": "webp"}}, "udobu": {"idle": {"b64": "assets/poses/udobu_idle.webp?v=18", "w": 277, "h": 442, "cropW": 277, "cropH": 442, "bodyH": 442, "footX": 0.444, "footY": 1.0, "scaleAdj": 1.08, "fmt": "webp"}, "walk": {"b64": "assets/poses/udobu_walk.webp?v=18", "w": 252, "h": 481, "cropW": 252, "cropH": 481, "bodyH": 442, "footX": 0.282, "footY": 1.0, "scaleAdj": 1.08, "fmt": "webp"}, "punch": {"b64": "assets/poses/udobu_punch.webp?v=18", "w": 413, "h": 442, "cropW": 413, "cropH": 442, "bodyH": 442, "footX": 0.492, "footY": 1.0, "scaleAdj": 1.08, "fmt": "webp"}, "kick": {"b64": "assets/poses/udobu_kick.webp?v=18", "w": 406, "h": 418, "cropW": 406, "cropH": 418, "bodyH": 442, "footX": 0.543, "footY": 1.0, "scaleAdj": 1.08, "fmt": "webp"}, "guard": {"b64": "assets/poses/udobu_guard.webp?v=18", "w": 302, "h": 402, "cropW": 302, "cropH": 402, "bodyH": 442, "footX": 0.555, "footY": 1.0, "scaleAdj": 1.08, "fmt": "webp"}, "down": {"b64": "assets/poses/udobu_down.webp?v=18", "w": 473, "h": 214, "cropW": 473, "cropH": 214, "bodyH": 442, "footX": 0.5, "footY": 1.0, "scaleAdj": 1.08, "fmt": "webp"}}, "arya": {"idle": {"b64": "assets/poses/arya_idle.webp?v=18", "w": 265, "h": 487, "cropW": 265, "cropH": 487, "bodyH": 487, "footX": 0.5757, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "walk": {"b64": "assets/poses/arya_walk.webp?v=18", "w": 280, "h": 473, "cropW": 280, "cropH": 473, "bodyH": 487, "footX": 0.5986, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "punch": {"b64": "assets/poses/arya_punch.webp?v=18", "w": 337, "h": 476, "cropW": 337, "cropH": 476, "bodyH": 487, "footX": 0.6751, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "kick": {"b64": "assets/poses/arya_kick.webp?v=18", "w": 366, "h": 447, "cropW": 366, "cropH": 447, "bodyH": 487, "footX": 0.1849, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "guard": {"b64": "assets/poses/arya_guard.webp?v=18", "w": 261, "h": 415, "cropW": 261, "cropH": 415, "bodyH": 487, "footX": 0.4291, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "down": {"b64": "assets/poses/arya_down.webp?v=18", "w": 525, "h": 177, "cropW": 525, "cropH": 177, "bodyH": 487, "footX": 0.5, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}}, "arya_skirt": {"idle": {"b64": "assets/poses/arya_skirt_idle.webp?v=18", "w": 317, "h": 482, "cropW": 317, "cropH": 482, "bodyH": 482, "footX": 0.149, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "walk": {"b64": "assets/poses/arya_skirt_walk.webp?v=18", "w": 330, "h": 500, "cropW": 330, "cropH": 500, "bodyH": 482, "footX": 0.701, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "punch": {"b64": "assets/poses/arya_skirt_punch.webp?v=18", "w": 401, "h": 495, "cropW": 401, "cropH": 495, "bodyH": 482, "footX": 0.704, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "kick": {"b64": "assets/poses/arya_skirt_kick.webp?v=18", "w": 382, "h": 456, "cropW": 382, "cropH": 456, "bodyH": 482, "footX": 0.284, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "guard": {"b64": "assets/poses/arya_skirt_guard.webp?v=18", "w": 319, "h": 445, "cropW": 319, "cropH": 445, "bodyH": 482, "footX": 0.372, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "down": {"b64": "assets/poses/arya_skirt_down.webp?v=18", "w": 530, "h": 352, "cropW": 530, "cropH": 352, "bodyH": 482, "footX": 0.5, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "special": {"b64": "assets/poses/arya_skirt_special.webp?v=18", "w": 388, "h": 501, "cropW": 388, "cropH": 501, "bodyH": 482, "footX": 0.354, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}}, "rice": {"special": {"b64": "assets/poses/rice_special.webp", "w": 420, "h": 496, "bodyH": 460, "cropW": 420, "cropH": 496, "footX": 0.397, "footY": 1.0, "scaleAdj": 1.15, "fmt": "webp"}, "idle": {"b64": "assets/poses/rice_idle.webp", "w": 326, "h": 460, "bodyH": 460, "cropW": 326, "cropH": 460, "footX": 0.1032, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "walk": {"b64": "assets/poses/rice_walk.webp", "w": 307, "h": 460, "bodyH": 460, "cropW": 307, "cropH": 460, "footX": 0.8188, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "punch": {"b64": "assets/poses/rice_punch.webp", "w": 421, "h": 460, "bodyH": 460, "cropW": 421, "cropH": 460, "footX": 0.8719, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "kick": {"b64": "assets/poses/rice_kick.webp", "w": 441, "h": 460, "bodyH": 460, "cropW": 441, "cropH": 460, "footX": 0.2452, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "guard": {"b64": "assets/poses/rice_guard.webp", "w": 335, "h": 460, "bodyH": 460, "cropW": 335, "cropH": 460, "footX": 0.2176, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "down": {"b64": "assets/poses/rice_down.webp", "w": 703, "h": 285, "bodyH": 460, "cropW": 703, "cropH": 285, "footX": 0.2805, "footY": 1.0, "scaleAdj": 0.654, "fmt": "webp"}}, "otome": {"idle": {"b64": "assets/poses/otome_idle.webp?v=18", "w": 292, "h": 490, "cropW": 292, "cropH": 490, "bodyH": 490, "footX": 0.52, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "walk": {"b64": "assets/poses/otome_walk.webp?v=18", "w": 391, "h": 490, "cropW": 391, "cropH": 490, "bodyH": 490, "footX": 0.484, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "punch": {"b64": "assets/poses/otome_punch.webp?v=18", "w": 423, "h": 487, "cropW": 423, "cropH": 487, "bodyH": 490, "footX": 0.408, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "kick": {"b64": "assets/poses/otome_kick.webp?v=18", "w": 331, "h": 485, "cropW": 331, "cropH": 485, "bodyH": 490, "footX": 0.383, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "guard": {"b64": "assets/poses/otome_guard.webp?v=18", "w": 347, "h": 475, "cropW": 347, "cropH": 475, "bodyH": 490, "footX": 0.567, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "down": {"b64": "assets/poses/otome_down.webp?v=18", "w": 522, "h": 193, "cropW": 522, "cropH": 193, "bodyH": 490, "footX": 0.5, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}}};
+const POSE_DATA = {"J": {"idle": {"b64": "assets/poses/J_idle.webp?v=18", "w": 286, "h": 475, "cropW": 286, "cropH": 475, "bodyH": 475, "footX": 0.489, "footY": 1.0, "scaleAdj": 1.152, "fmt": "webp"}, "walk": {"b64": "assets/poses/J_walk.webp?v=18", "w": 261, "h": 507, "cropW": 261, "cropH": 507, "bodyH": 475, "footX": 0.662, "footY": 1.0, "scaleAdj": 1.152, "fmt": "webp"}, "punch": {"b64": "assets/poses/J_punch.webp?v=18", "w": 335, "h": 486, "cropW": 335, "cropH": 486, "bodyH": 475, "footX": 0.408, "footY": 1.0, "scaleAdj": 1.152, "fmt": "webp"}, "kick": {"b64": "assets/poses/J_kick.webp?v=18", "w": 364, "h": 447, "cropW": 364, "cropH": 447, "bodyH": 475, "footX": 0.331, "footY": 1.0, "scaleAdj": 1.152, "fmt": "webp"}, "guard": {"b64": "assets/poses/J_guard.webp?v=18", "w": 217, "h": 451, "cropW": 217, "cropH": 451, "bodyH": 475, "footX": 0.128, "footY": 1.0, "scaleAdj": 1.152, "fmt": "webp"}, "down": {"b64": "assets/poses/J_down.webp?v=18", "w": 499, "h": 149, "cropW": 499, "cropH": 149, "bodyH": 475, "footX": 0.5, "footY": 1.0, "scaleAdj": 1.152, "fmt": "webp"}, "special": {"b64": "assets/poses/J_special.webp?v=18", "w": 550, "h": 455, "cropW": 550, "cropH": 455, "bodyH": 475, "footX": 0.484, "footY": 1.0, "scaleAdj": 1.152, "fmt": "webp"}}, "char": {"idle": {"b64": "assets/poses/char_idle.webp?v=19", "w": 253, "h": 432, "cropW": 253, "cropH": 432, "bodyH": 432, "footX": 0.812, "footY": 1.0, "scaleAdj": 0.942, "fmt": "webp"}, "walk": {"b64": "assets/poses/char_walk.webp?v=19", "w": 278, "h": 441, "cropW": 278, "cropH": 441, "bodyH": 432, "footX": 0.476, "footY": 1.0, "scaleAdj": 0.942, "fmt": "webp"}, "punch": {"b64": "assets/poses/char_punch.webp?v=19", "w": 300, "h": 435, "cropW": 300, "cropH": 435, "bodyH": 432, "footX": 0.384, "footY": 1.0, "scaleAdj": 0.942, "fmt": "webp"}, "kick": {"b64": "assets/poses/char_kick.webp?v=19", "w": 301, "h": 405, "cropW": 301, "cropH": 405, "bodyH": 432, "footX": 0.623, "footY": 1.0, "scaleAdj": 0.942, "fmt": "webp"}, "guard": {"b64": "assets/poses/char_guard.webp?v=19", "w": 234, "h": 417, "cropW": 234, "cropH": 417, "bodyH": 432, "footX": 0.881, "footY": 1.0, "scaleAdj": 0.942, "fmt": "webp"}, "down": {"b64": "assets/poses/char_down.webp?v=19", "w": 466, "h": 179, "cropW": 466, "cropH": 179, "bodyH": 432, "footX": 0.5, "footY": 1.0, "scaleAdj": 0.942, "fmt": "webp"}}, "nao": {"idle": {"b64": "assets/poses/nao_idle.webp?v=18", "w": 320, "h": 404, "cropW": 320, "cropH": 404, "bodyH": 404, "footX": 0.402, "footY": 1.0, "scaleAdj": 1.151, "fmt": "webp"}, "walk": {"b64": "assets/poses/nao_walk.webp?v=18", "w": 313, "h": 403, "cropW": 313, "cropH": 403, "bodyH": 404, "footX": 0.421, "footY": 1.0, "scaleAdj": 1.151, "fmt": "webp"}, "punch": {"b64": "assets/poses/nao_punch.webp?v=18", "w": 396, "h": 403, "cropW": 396, "cropH": 403, "bodyH": 404, "footX": 0.343, "footY": 1.0, "scaleAdj": 1.151, "fmt": "webp"}, "kick": {"b64": "assets/poses/nao_kick.webp?v=18", "w": 364, "h": 388, "cropW": 364, "cropH": 388, "bodyH": 404, "footX": 0.128, "footY": 1.0, "scaleAdj": 1.151, "fmt": "webp"}, "guard": {"b64": "assets/poses/nao_guard.webp?v=18", "w": 303, "h": 382, "cropW": 303, "cropH": 382, "bodyH": 404, "footX": 0.239, "footY": 1.0, "scaleAdj": 1.151, "fmt": "webp"}, "down": {"b64": "assets/poses/nao_down.webp?v=18", "w": 418, "h": 184, "cropW": 418, "cropH": 184, "bodyH": 404, "footX": 0.5, "footY": 1.0, "scaleAdj": 1.151, "fmt": "webp"}, "special": {"b64": "assets/poses/nao_special.webp?v=18", "w": 349, "h": 379, "cropW": 349, "cropH": 379, "bodyH": 404, "footX": 0.312, "footY": 1.0, "scaleAdj": 1.151, "fmt": "webp"}}, "udobu": {"idle": {"b64": "assets/poses/udobu_idle.webp?v=19", "w": 277, "h": 442, "cropW": 277, "cropH": 442, "bodyH": 442, "footX": 0.556, "footY": 1.0, "scaleAdj": 1.08, "fmt": "webp"}, "walk": {"b64": "assets/poses/udobu_walk.webp?v=19", "w": 252, "h": 481, "cropW": 252, "cropH": 481, "bodyH": 442, "footX": 0.718, "footY": 1.0, "scaleAdj": 1.08, "fmt": "webp"}, "punch": {"b64": "assets/poses/udobu_punch.webp?v=19", "w": 413, "h": 442, "cropW": 413, "cropH": 442, "bodyH": 442, "footX": 0.508, "footY": 1.0, "scaleAdj": 1.08, "fmt": "webp"}, "kick": {"b64": "assets/poses/udobu_kick.webp?v=19", "w": 406, "h": 418, "cropW": 406, "cropH": 418, "bodyH": 442, "footX": 0.457, "footY": 1.0, "scaleAdj": 1.08, "fmt": "webp"}, "guard": {"b64": "assets/poses/udobu_guard.webp?v=19", "w": 302, "h": 402, "cropW": 302, "cropH": 402, "bodyH": 442, "footX": 0.445, "footY": 1.0, "scaleAdj": 1.08, "fmt": "webp"}, "down": {"b64": "assets/poses/udobu_down.webp?v=19", "w": 473, "h": 214, "cropW": 473, "cropH": 214, "bodyH": 442, "footX": 0.5, "footY": 1.0, "scaleAdj": 1.08, "fmt": "webp"}}, "arya": {"idle": {"b64": "assets/poses/arya_idle.webp?v=18", "w": 265, "h": 487, "cropW": 265, "cropH": 487, "bodyH": 487, "footX": 0.5757, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "walk": {"b64": "assets/poses/arya_walk.webp?v=18", "w": 280, "h": 473, "cropW": 280, "cropH": 473, "bodyH": 487, "footX": 0.5986, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "punch": {"b64": "assets/poses/arya_punch.webp?v=18", "w": 337, "h": 476, "cropW": 337, "cropH": 476, "bodyH": 487, "footX": 0.6751, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "kick": {"b64": "assets/poses/arya_kick.webp?v=18", "w": 366, "h": 447, "cropW": 366, "cropH": 447, "bodyH": 487, "footX": 0.1849, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "guard": {"b64": "assets/poses/arya_guard.webp?v=18", "w": 261, "h": 415, "cropW": 261, "cropH": 415, "bodyH": 487, "footX": 0.4291, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "down": {"b64": "assets/poses/arya_down.webp?v=18", "w": 525, "h": 177, "cropW": 525, "cropH": 177, "bodyH": 487, "footX": 0.5, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}}, "arya_skirt": {"idle": {"b64": "assets/poses/arya_skirt_idle.webp?v=18", "w": 317, "h": 482, "cropW": 317, "cropH": 482, "bodyH": 482, "footX": 0.149, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "walk": {"b64": "assets/poses/arya_skirt_walk.webp?v=18", "w": 330, "h": 500, "cropW": 330, "cropH": 500, "bodyH": 482, "footX": 0.701, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "punch": {"b64": "assets/poses/arya_skirt_punch.webp?v=18", "w": 401, "h": 495, "cropW": 401, "cropH": 495, "bodyH": 482, "footX": 0.704, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "kick": {"b64": "assets/poses/arya_skirt_kick.webp?v=18", "w": 382, "h": 456, "cropW": 382, "cropH": 456, "bodyH": 482, "footX": 0.284, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "guard": {"b64": "assets/poses/arya_skirt_guard.webp?v=18", "w": 319, "h": 445, "cropW": 319, "cropH": 445, "bodyH": 482, "footX": 0.372, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "down": {"b64": "assets/poses/arya_skirt_down.webp?v=18", "w": 530, "h": 352, "cropW": 530, "cropH": 352, "bodyH": 482, "footX": 0.5, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "special": {"b64": "assets/poses/arya_skirt_special.webp?v=18", "w": 388, "h": 501, "cropW": 388, "cropH": 501, "bodyH": 482, "footX": 0.354, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}}, "rice": {"special": {"b64": "assets/poses/rice_special.webp", "w": 420, "h": 496, "bodyH": 460, "cropW": 420, "cropH": 496, "footX": 0.397, "footY": 1.0, "scaleAdj": 1.15, "fmt": "webp"}, "idle": {"b64": "assets/poses/rice_idle.webp", "w": 326, "h": 460, "bodyH": 460, "cropW": 326, "cropH": 460, "footX": 0.1032, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "walk": {"b64": "assets/poses/rice_walk.webp", "w": 307, "h": 460, "bodyH": 460, "cropW": 307, "cropH": 460, "footX": 0.8188, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "punch": {"b64": "assets/poses/rice_punch.webp", "w": 421, "h": 460, "bodyH": 460, "cropW": 421, "cropH": 460, "footX": 0.8719, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "kick": {"b64": "assets/poses/rice_kick.webp", "w": 441, "h": 460, "bodyH": 460, "cropW": 441, "cropH": 460, "footX": 0.2452, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "guard": {"b64": "assets/poses/rice_guard.webp", "w": 335, "h": 460, "bodyH": 460, "cropW": 335, "cropH": 460, "footX": 0.2176, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "down": {"b64": "assets/poses/rice_down.webp", "w": 703, "h": 285, "bodyH": 460, "cropW": 703, "cropH": 285, "footX": 0.2805, "footY": 1.0, "scaleAdj": 0.654, "fmt": "webp"}}, "otome": {"idle": {"b64": "assets/poses/otome_idle.webp?v=18", "w": 292, "h": 490, "cropW": 292, "cropH": 490, "bodyH": 490, "footX": 0.52, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "walk": {"b64": "assets/poses/otome_walk.webp?v=18", "w": 391, "h": 490, "cropW": 391, "cropH": 490, "bodyH": 490, "footX": 0.484, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "punch": {"b64": "assets/poses/otome_punch.webp?v=18", "w": 423, "h": 487, "cropW": 423, "cropH": 487, "bodyH": 490, "footX": 0.408, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "kick": {"b64": "assets/poses/otome_kick.webp?v=18", "w": 331, "h": 485, "cropW": 331, "cropH": 485, "bodyH": 490, "footX": 0.383, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "guard": {"b64": "assets/poses/otome_guard.webp?v=18", "w": 347, "h": 475, "cropW": 347, "cropH": 475, "bodyH": 490, "footX": 0.567, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}, "down": {"b64": "assets/poses/otome_down.webp?v=18", "w": 522, "h": 193, "cropW": 522, "cropH": 193, "bodyH": 490, "footX": 0.5, "footY": 1.0, "scaleAdj": 1.0, "fmt": "webp"}}};
 
 const POSE_IMGS = {}; // charId -> {state: Image}
 const POSE_META = {}; // charId -> {state: {footX,footY,relH}}
@@ -2019,4 +2019,142 @@ document.body.classList.add('lock-landscape');
   document.addEventListener('pointerdown', wake, {capture:true});
   document.addEventListener('touchstart', wake, {capture:true, passive:true});
   document.addEventListener('click', wake, {capture:true});
+})();
+
+// ===== ポーズメニュー(バトル中) =====
+(function(){
+  const pauseBtn   = document.getElementById('pauseBtn');
+  const pauseOv    = document.getElementById('pauseOverlay');
+  const resumeBtn  = document.getElementById('pauseResumeBtn');
+  const soundBtn   = document.getElementById('pauseSoundBtn');
+  const configBtn  = document.getElementById('pauseConfigBtn');
+  const quitBtn    = document.getElementById('pauseQuitBtn');
+  const soundVal   = document.getElementById('pauseSoundVal');
+  const settingsOv = document.getElementById('settingsOverlay');
+  const configOv   = document.getElementById('configOverlay');
+
+  let savedRunning = false;
+
+  function isInBattle(){ return document.body.classList.contains('in-battle'); }
+
+  function openPause(){
+    if(!isInBattle()) return;
+    savedRunning = running;
+    running = false;                 // 進行を止める(描画は継続)
+    if(soundVal) soundVal.textContent = Math.round(SFX.bgmVol*10); // サウンドの目安
+    pauseOv.classList.remove('hidden');
+  }
+  function closePause(resume){
+    pauseOv.classList.add('hidden');
+    if(resume){ running = savedRunning; lastT = 0; } // lastT=0でdtジャンプ防止
+  }
+
+  pauseBtn.addEventListener('click', (e)=>{ e.preventDefault(); SFX.init(); openPause(); });
+  resumeBtn.addEventListener('click', ()=>{ SFX.init(); closePause(true); });
+
+  // サウンド設定 → 既存の設定画面を流用。戻り先をポーズに。
+  soundBtn.addEventListener('click', ()=>{
+    SFX.init();
+    window.__settingsReturn = 'pause';
+    pauseOv.classList.add('hidden');
+    settingsOv.classList.remove('hidden');
+    const st=document.getElementById('setSoundToggle');
+    if(st){ st.textContent=SFX.on?'ON':'OFF'; st.classList.toggle('on',SFX.on); st.classList.toggle('off',!SFX.on); }
+  });
+
+  // ボタンコンフィグ
+  configBtn.addEventListener('click', ()=>{
+    SFX.init();
+    pauseOv.classList.add('hidden');
+    configOv.classList.remove('hidden');
+  });
+  document.getElementById('cfgCloseBtn').addEventListener('click', ()=>{
+    SFX.init();
+    configOv.classList.add('hidden');
+    if(isInBattle()) pauseOv.classList.remove('hidden'); // バトル中ならポーズに戻る
+  });
+
+  // バトルを終了する → 試合中断してキャラ選択へ
+  quitBtn.addEventListener('click', ()=>{
+    SFX.init();
+    closePause(false);
+    running = false;
+    document.body.classList.remove('in-battle');
+    if(typeof resize==='function') resize();
+    SFX.stopBattleBGM();
+    const res=document.getElementById('resultOverlay'); if(res) res.classList.add('hidden');
+    showCharSelect();
+  });
+
+  // 設定画面の閉じるが押されたとき、ポーズ経由ならポーズへ戻す
+  const setCloseBtn=document.getElementById('setCloseBtn');
+  if(setCloseBtn){
+    setCloseBtn.addEventListener('click', ()=>{
+      if(window.__settingsReturn==='pause'){
+        window.__settingsReturn=null;
+        settingsOv.classList.add('hidden');
+        if(isInBattle()) pauseOv.classList.remove('hidden');
+      }
+    });
+  }
+})();
+
+// ===== ボタンコンフィグ(配置/サイズ/透明度・localStorage保存) =====
+(function(){
+  const controls = document.getElementById('controls');
+  const layoutSeg= document.getElementById('cfgLayoutSeg');
+  const sizeSeg  = document.getElementById('cfgSizeSeg');
+  const opSlider = document.getElementById('cfgOpacitySlider');
+  const opVal    = document.getElementById('cfgOpacityVal');
+  if(!controls) return;
+
+  const cfg = {
+    layout: localStorage.getItem('ra_cfg_layout') || 'normal',
+    size:   localStorage.getItem('ra_cfg_size')   || 'm',
+    opacity:parseInt(localStorage.getItem('ra_cfg_opacity')||'100',10),
+  };
+
+  function apply(){
+    controls.classList.toggle('cfg-swap', cfg.layout==='swap');
+    controls.classList.remove('cfg-size-s','cfg-size-l');
+    if(cfg.size==='s') controls.classList.add('cfg-size-s');
+    if(cfg.size==='l') controls.classList.add('cfg-size-l');
+    controls.style.opacity = (cfg.opacity/100).toFixed(2);
+  }
+  function save(){
+    localStorage.setItem('ra_cfg_layout', cfg.layout);
+    localStorage.setItem('ra_cfg_size',   cfg.size);
+    localStorage.setItem('ra_cfg_opacity',String(cfg.opacity));
+  }
+
+  // UI初期反映
+  if(layoutSeg){ layoutSeg.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.layout===cfg.layout)); }
+  if(sizeSeg){   sizeSeg.querySelectorAll('button').forEach(b=>b.classList.toggle('on', b.dataset.size===cfg.size)); }
+  if(opSlider){  opSlider.value=cfg.opacity; if(opVal) opVal.textContent=cfg.opacity; }
+
+  if(layoutSeg){
+    layoutSeg.addEventListener('click', e=>{
+      const b=e.target.closest('button[data-layout]'); if(!b) return;
+      cfg.layout=b.dataset.layout;
+      layoutSeg.querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b));
+      apply(); save();
+    });
+  }
+  if(sizeSeg){
+    sizeSeg.addEventListener('click', e=>{
+      const b=e.target.closest('button[data-size]'); if(!b) return;
+      cfg.size=b.dataset.size;
+      sizeSeg.querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b));
+      apply(); save();
+    });
+  }
+  if(opSlider){
+    opSlider.addEventListener('input', function(){
+      cfg.opacity=parseInt(this.value,10);
+      if(opVal) opVal.textContent=cfg.opacity;
+      apply(); save();
+    });
+  }
+
+  apply(); // 起動時に保存済み設定を適用
 })();
